@@ -8,7 +8,7 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Separator } from "@/components/ui/separator";
 import {
   AlertTriangle, GitMerge, X, Mail, TrendingUp, TrendingDown,
-  CheckCircle2, Clock, PoundSterling, Calendar
+  CheckCircle2, Clock, PoundSterling, Calendar, Send, FileText, FileSignature
 } from "lucide-react";
 
 const TIMELINE = [
@@ -178,23 +178,69 @@ export default function Student360() {
         </TabsContent>
 
         <TabsContent value="funding" className="mt-4">
-          <Card>
-            <CardHeader><CardTitle className="text-base">Funding & finance</CardTitle></CardHeader>
-            <CardContent className="space-y-3">
-              <div className="flex items-center justify-between rounded-lg bg-muted/60 p-3">
-                <div className="flex items-center gap-2 text-sm"><PoundSterling className="h-4 w-4 text-emerald-600" /> Tuition outstanding</div>
-                <span className="font-semibold">£3,150.00</span>
-              </div>
-              <div className="flex items-center justify-between rounded-lg bg-muted/60 p-3">
-                <div className="flex items-center gap-2 text-sm"><CheckCircle2 className="h-4 w-4 text-emerald-600" /> SLC status</div>
-                <Badge className="bg-emerald-50 text-emerald-700 border-emerald-200 hover:bg-emerald-50">Confirmed</Badge>
-              </div>
-              <div className="flex items-center justify-between rounded-lg bg-muted/60 p-3">
-                <div className="flex items-center gap-2 text-sm"><Clock className="h-4 w-4 text-amber-600" /> Next instalment</div>
-                <span className="text-sm">02 Sep 2026</span>
-              </div>
-            </CardContent>
-          </Card>
+          <div className="grid lg:grid-cols-2 gap-6">
+            {/* Category 1 — Student to pay */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-base">Student to pay</CardTitle>
+                <CardDescription>Self-funded tuition, reminders and agreements.</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-2">
+                <FieldRow icon={Send} label="Stage 1 fee reminder">
+                  <Badge className="bg-emerald-50 text-emerald-700 border-emerald-200 hover:bg-emerald-50">Sent</Badge>
+                  <span className="text-xs text-muted-foreground ml-2">12 Aug 2026</span>
+                </FieldRow>
+                <FieldRow icon={CheckCircle2} label="Stage 1 payment status">
+                  <Badge className="bg-emerald-50 text-emerald-700 border-emerald-200 hover:bg-emerald-50">Paid</Badge>
+                </FieldRow>
+                <FieldRow icon={Mail} label="Follow-up communication">
+                  <Badge className="bg-emerald-50 text-emerald-700 border-emerald-200 hover:bg-emerald-50">Sent</Badge>
+                  <span className="text-xs text-muted-foreground ml-2">14 Aug 2026</span>
+                </FieldRow>
+                <FieldRow icon={Send} label="Stage 2 reminder">
+                  <Badge variant="outline" className="text-muted-foreground">Not sent</Badge>
+                </FieldRow>
+                <FieldRow icon={Send} label="Stage 3 reminder">
+                  <Badge variant="outline" className="text-muted-foreground">Not sent</Badge>
+                </FieldRow>
+                <FieldRow icon={CheckCircle2} label="Maintenance — Term 3 received">
+                  <Badge className="bg-amber-50 text-amber-700 border-amber-200 hover:bg-amber-50">Pending</Badge>
+                </FieldRow>
+                <FieldRow icon={PoundSterling} label="Other amounts (retake / extra tuition)">
+                  <span className="text-sm font-semibold">£450.00</span>
+                  <span className="text-xs text-muted-foreground ml-2">Resit fee</span>
+                </FieldRow>
+                <FieldRow icon={FileText} label="Fee payment policy">
+                  <Badge className="bg-sky-50 text-sky-700 border-sky-200 hover:bg-sky-50">On file</Badge>
+                </FieldRow>
+                <FieldRow icon={FileSignature} label="Fee agreement signed">
+                  <Badge className="bg-emerald-50 text-emerald-700 border-emerald-200 hover:bg-emerald-50">Signed</Badge>
+                </FieldRow>
+              </CardContent>
+            </Card>
+
+            {/* Category 2 — Student Loan Company */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-base">Student Loan Company</CardTitle>
+                <CardDescription>SLC application status and tracking.</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-2">
+                <FieldRow icon={CheckCircle2} label="Applied for loan">
+                  <Badge className="bg-emerald-50 text-emerald-700 border-emerald-200 hover:bg-emerald-50">Yes</Badge>
+                </FieldRow>
+                <FieldRow icon={Calendar} label="Application date">
+                  <span className="text-sm font-medium">14 Jul 2026</span>
+                </FieldRow>
+                <FieldRow icon={Clock} label="Application status">
+                  <Badge className="bg-emerald-50 text-emerald-700 border-emerald-200 hover:bg-emerald-50">Approved</Badge>
+                </FieldRow>
+                <FieldRow icon={PoundSterling} label="Loan confirmed amount">
+                  <span className="text-sm font-semibold">£9,250.00</span>
+                </FieldRow>
+              </CardContent>
+            </Card>
+          </div>
         </TabsContent>
 
         <TabsContent value="communications" className="mt-4">
@@ -235,6 +281,18 @@ export default function Student360() {
           </Card>
         </TabsContent>
       </Tabs>
+    </div>
+  );
+}
+
+function FieldRow({ icon: Icon, label, children }) {
+  return (
+    <div className="flex items-center justify-between rounded-lg border border-border p-3">
+      <div className="flex items-center gap-2 text-sm">
+        <Icon className="h-4 w-4 text-muted-foreground" />
+        {label}
+      </div>
+      <div className="flex items-center">{children}</div>
     </div>
   );
 }
