@@ -7,6 +7,23 @@ import { AuthProvider, useAuth } from '@/lib/AuthContext';
 import UserNotRegisteredError from '@/components/UserNotRegisteredError';
 import ScrollToTop from './components/ScrollToTop';
 // Add page imports here
+import { Navigate } from 'react-router-dom';
+import ProtectedRoute from '@/components/ProtectedRoute';
+import AppLayout from '@/components/AppLayout';
+import Login from '@/pages/Login';
+import Register from '@/pages/Register';
+import ForgotPassword from '@/pages/ForgotPassword';
+import ResetPassword from '@/pages/ResetPassword';
+import Dashboard from '@/pages/Dashboard';
+import Student360 from '@/pages/Student360';
+import Attendance from '@/pages/Attendance';
+import HesaReturn from '@/pages/HesaReturn';
+import ReportBuilder from '@/pages/ReportBuilder';
+import WithdrawalWorkflow from '@/pages/WithdrawalWorkflow';
+import PaymentPlans from '@/pages/PaymentPlans';
+import Communications from '@/pages/Communications';
+import AdminSettings from '@/pages/AdminSettings';
+import AuditLog from '@/pages/AuditLog';
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
@@ -35,6 +52,24 @@ const AuthenticatedApp = () => {
   return (
     <Routes>
       {/* Add your page Route elements here */}
+      <Route path="/login" element={<Login />} />
+      <Route path="/register" element={<Register />} />
+      <Route path="/forgot-password" element={<ForgotPassword />} />
+      <Route path="/reset-password" element={<ResetPassword />} />
+      <Route element={<ProtectedRoute unauthenticatedElement={<Navigate to="/login" replace />} />}>
+        <Route element={<AppLayout />}>
+          <Route path="/" element={<Dashboard />} />
+          <Route path="/students" element={<Student360 />} />
+          <Route path="/attendance" element={<Attendance />} />
+          <Route path="/hesa" element={<HesaReturn />} />
+          <Route path="/reports" element={<ReportBuilder />} />
+          <Route path="/withdrawals" element={<WithdrawalWorkflow />} />
+          <Route path="/finance" element={<PaymentPlans />} />
+          <Route path="/communications" element={<Communications />} />
+          <Route path="/settings" element={<AdminSettings />} />
+          <Route path="/audit" element={<AuditLog />} />
+        </Route>
+      </Route>
       <Route path="*" element={<PageNotFound />} />
     </Routes>
   );
