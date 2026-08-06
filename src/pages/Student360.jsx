@@ -10,6 +10,9 @@ import {
   AlertTriangle, GitMerge, X, Mail, TrendingUp, TrendingDown,
   CheckCircle2, Clock, PoundSterling, Calendar, Send, FileText, FileSignature
 } from "lucide-react";
+import RegistrationCard from "@/components/student/RegistrationCard";
+import AttendanceWeekly from "@/components/student/AttendanceWeekly";
+import ChangeOfCircumstances from "@/components/student/ChangeOfCircumstances";
 
 const TIMELINE = [
   { date: "Sep 2021", label: "Enrolled", detail: "BSc Computer Science · Provider: Northbrook", tone: "sky" },
@@ -58,6 +61,8 @@ export default function Student360() {
           <Button>View audit trail</Button>
         </div>
       </div>
+
+      <RegistrationCard />
 
       {/* Duplicate merge prompt */}
       {showMerge && (
@@ -125,6 +130,7 @@ export default function Student360() {
           <TabsTrigger value="attendance">Attendance</TabsTrigger>
           <TabsTrigger value="performance">Performance</TabsTrigger>
           <TabsTrigger value="funding">Funding & Finance</TabsTrigger>
+          <TabsTrigger value="circs">Change of Circs</TabsTrigger>
           <TabsTrigger value="communications">Communications</TabsTrigger>
           <TabsTrigger value="hesa">HESA Fields</TabsTrigger>
         </TabsList>
@@ -156,6 +162,7 @@ export default function Student360() {
               </CardContent>
             </Card>
           </div>
+          <div className="mt-6"><AttendanceWeekly /></div>
         </TabsContent>
 
         <TabsContent value="performance" className="mt-4">
@@ -241,6 +248,10 @@ export default function Student360() {
               </CardContent>
             </Card>
           </div>
+        </TabsContent>
+
+        <TabsContent value="circs" className="mt-4">
+          <ChangeOfCircumstances />
         </TabsContent>
 
         <TabsContent value="communications" className="mt-4">
