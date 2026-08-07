@@ -1,0 +1,95 @@
+{
+  "name": "Qualification",
+  "description": "What a Course declares as its qualification aim. A partial award (e.g. year-1 HND) and a full award (e.g. 3-year diploma) are the SAME structure with different award_type values \u2014 not separate logic paths. An intermediate award links to its full award via parent_qualification_id.",
+  "type": "object",
+  "properties": {
+    "course_id": {
+      "type": "string"
+    },
+    "name": {
+      "type": "string"
+    },
+    "code": {
+      "type": "string",
+      "description": "HESA qualification code"
+    },
+    "level": {
+      "type": "string"
+    },
+    "award_type": {
+      "type": "string",
+      "enum": [
+        "full",
+        "intermediate"
+      ]
+    },
+    "parent_qualification_id": {
+      "type": "string",
+      "description": "For intermediate awards, the full award they count toward"
+    },
+    "credits": {
+      "type": "number"
+    },
+    "institution_id": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "course_id",
+    "name",
+    "award_type",
+    "institution_id"
+  ],
+  "rls": {
+    "read": {
+      "data.institution_id": "{{user.data.institution_id}}"
+    },
+    "create": {
+      "$and": [
+        {
+          "data.institution_id": "{{user.data.institution_id}}"
+        },
+        {
+          "$or": [
+            {
+              "user_condition": {
+                "role": "academic"
+              }
+            },
+            {
+              "user_condition": {
+                "role": "admin"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "update": {
+      "$and": [
+        {
+          "data.institution_id": "{{user.data.institution_id}}"
+        },
+        {
+          "$or": [
+            {
+              "user_condition": {
+                "role": "academic"
+              }
+            },
+            {
+              "user_condition": {
+                "role": "admin"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

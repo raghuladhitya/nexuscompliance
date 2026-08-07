@@ -1,0 +1,42 @@
+{
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "hesa_recalc_leaver",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "recalc": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "ComputeStudentStatus",
+            "args": {
+              "engagement_id": "${ .trigger.data.engagement_id }"
+            }
+          },
+          "then": "end",
+          "x-base44": {
+            "title": "Recalculate HESA readiness",
+            "description": "On leaver change"
+          }
+        }
+      }
+    ]
+  },
+  "trigger": {
+    "condition": null,
+    "config": {
+      "trigger_type": "entity",
+      "events": [
+        "create",
+        "update",
+        "delete"
+      ],
+      "entity_name": "Leaver"
+    }
+  },
+  "name": "HESA Recalc on Leaver",
+  "description": "Recalculates HESA readiness automatically when a Leaver record is created/changed. A Leaver with no QualificationAwarded forces needs_review. Event-triggered \u2014 never manual. See base44/shared/studentStatus.ts."
+}

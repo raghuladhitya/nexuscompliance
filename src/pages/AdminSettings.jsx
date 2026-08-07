@@ -10,6 +10,7 @@ import { Switch } from "@/components/ui/switch";
 import {
   Plus, Trash2, ShieldCheck, Database, RefreshCw, CheckCircle2, XCircle
 } from "lucide-react";
+import ProviderProfile from "@/components/admin/ProviderProfile";
 
 const ROLES = ["Registry", "Compliance", "Finance", "Academic", "Senior Mgmt"];
 const PERMISSIONS = ["View students", "Edit records", "Withdrawals", "HESA submit", "Finance", "Audit log"];
@@ -51,6 +52,8 @@ export default function AdminSettings() {
         <h1 className="text-2xl font-semibold tracking-tight">Admin & Settings</h1>
         <p className="text-sm text-muted-foreground mt-0.5">Configure roles, fields and data sources — no engineering work.</p>
       </div>
+
+      <ProviderProfile />
 
       {/* Data source status */}
       <Card>

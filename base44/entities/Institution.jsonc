@@ -1,16 +1,61 @@
 {
   "name": "Institution",
+  "description": "Institution-level Provider Profile reference data (UKPRN, HESA provider code, cost centres, address). Institution-wide \u2014 never student-level.",
   "properties": {
-    "hesa_provider_code": {
-      "description": "HESA provider identifier",
+    "name": {
+      "description": "Institution / provider name",
       "type": "string"
     },
-    "name": {
-      "description": "Institution name",
+    "legal_name": {
+      "description": "Legal entity name",
       "type": "string"
     },
     "ukprn": {
       "description": "UK Provider Reference Number",
+      "type": "string"
+    },
+    "hesa_provider_code": {
+      "description": "HESA provider identifier",
+      "type": "string"
+    },
+    "cost_centres": {
+      "description": "HESA Cost Centres for this institution",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "code": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "name",
+          "code"
+        ]
+      }
+    },
+    "address_line_1": {
+      "type": "string"
+    },
+    "address_line_2": {
+      "type": "string"
+    },
+    "town": {
+      "type": "string"
+    },
+    "postcode": {
+      "type": "string"
+    },
+    "country": {
+      "type": "string"
+    },
+    "website": {
+      "type": "string"
+    },
+    "main_contact_email": {
       "type": "string"
     }
   },

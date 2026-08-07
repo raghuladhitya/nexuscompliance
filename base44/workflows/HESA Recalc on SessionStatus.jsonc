@@ -1,0 +1,42 @@
+{
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "hesa_recalc_session_status",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "recalc": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "ComputeStudentStatus",
+            "args": {
+              "engagement_id": "${ .trigger.data.engagement_id }"
+            }
+          },
+          "then": "end",
+          "x-base44": {
+            "title": "Recalculate HESA readiness",
+            "description": "On session status change"
+          }
+        }
+      }
+    ]
+  },
+  "trigger": {
+    "condition": null,
+    "config": {
+      "trigger_type": "entity",
+      "events": [
+        "create",
+        "update",
+        "delete"
+      ],
+      "entity_name": "SessionStatus"
+    }
+  },
+  "name": "HESA Recalc on SessionStatus",
+  "description": "Recalculates HESA readiness automatically when a SessionStatus record changes. Event-triggered \u2014 never manual. See base44/shared/studentStatus.ts."
+}

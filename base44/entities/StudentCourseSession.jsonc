@@ -1,0 +1,102 @@
+{
+  "name": "StudentCourseSession",
+  "description": "A delivery session of a course (e.g. the 2025/26 delivery). Engagements link to a session; SessionStatus records are scoped within it. Defined once per course per term by Academics.",
+  "type": "object",
+  "properties": {
+    "course_id": {
+      "type": "string"
+    },
+    "name": {
+      "type": "string"
+    },
+    "start_date": {
+      "format": "date",
+      "type": "string"
+    },
+    "end_date": {
+      "format": "date",
+      "type": "string"
+    },
+    "institution_id": {
+      "type": "string"
+    },
+    "source": {
+      "type": "string",
+      "enum": [
+        "hesa_xml",
+        "ebs_export",
+        "reconciliation",
+        "system"
+      ]
+    },
+    "source_year": {
+      "type": "string"
+    },
+    "reconciliation_status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "clean",
+        "duplicate_flagged"
+      ]
+    }
+  },
+  "required": [
+    "course_id",
+    "name",
+    "start_date",
+    "institution_id"
+  ],
+  "rls": {
+    "read": {
+      "data.institution_id": "{{user.data.institution_id}}"
+    },
+    "create": {
+      "$and": [
+        {
+          "data.institution_id": "{{user.data.institution_id}}"
+        },
+        {
+          "$or": [
+            {
+              "user_condition": {
+                "role": "academic"
+              }
+            },
+            {
+              "user_condition": {
+                "role": "admin"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "update": {
+      "$and": [
+        {
+          "data.institution_id": "{{user.data.institution_id}}"
+        },
+        {
+          "$or": [
+            {
+              "user_condition": {
+                "role": "academic"
+              }
+            },
+            {
+              "user_condition": {
+                "role": "admin"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}
