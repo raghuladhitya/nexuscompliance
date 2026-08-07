@@ -1,7 +1,14 @@
 {
   "name": "Cohort",
   "properties": {
+    "name": {
+      "type": "string"
+    },
     "course_id": {
+      "type": "string"
+    },
+    "start_date": {
+      "format": "date",
       "type": "string"
     },
     "end_date": {
@@ -9,13 +16,6 @@
       "type": "string"
     },
     "institution_id": {
-      "type": "string"
-    },
-    "name": {
-      "type": "string"
-    },
-    "start_date": {
-      "format": "date",
       "type": "string"
     }
   },
@@ -32,9 +32,18 @@
           "data.institution_id": "{{user.data.institution_id}}"
         },
         {
-          "user_condition": {
-            "role": "academic"
-          }
+          "$or": [
+            {
+              "user_condition": {
+                "role": "academic"
+              }
+            },
+            {
+              "user_condition": {
+                "role": "admin"
+              }
+            }
+          ]
         }
       ]
     },
@@ -52,9 +61,18 @@
           "data.institution_id": "{{user.data.institution_id}}"
         },
         {
-          "user_condition": {
-            "role": "academic"
-          }
+          "$or": [
+            {
+              "user_condition": {
+                "role": "academic"
+              }
+            },
+            {
+              "user_condition": {
+                "role": "admin"
+              }
+            }
+          ]
         }
       ]
     }
