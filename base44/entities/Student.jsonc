@@ -1,0 +1,63 @@
+{
+  "description": "One record per real person, independent of how many times they enrol, transfer, or reattempt.",
+  "name": "Student",
+  "properties": {
+    "contact_email": {
+      "type": "string"
+    },
+    "date_of_birth": {
+      "format": "date",
+      "type": "string"
+    },
+    "first_name": {
+      "type": "string"
+    },
+    "institution_id": {
+      "description": "Tenant scope",
+      "type": "string"
+    },
+    "last_name": {
+      "type": "string"
+    },
+    "person_code": {
+      "description": "Unique person identifier within the institution",
+      "type": "string"
+    },
+    "possible_duplicate_of": {
+      "description": "Student id this record may be a duplicate of, if flagged by the system",
+      "type": "string"
+    }
+  },
+  "required": [
+    "person_code",
+    "first_name",
+    "last_name",
+    "institution_id"
+  ],
+  "rls": {
+    "create": {
+      "$and": [
+        {
+          "data.institution_id": "{{user.data.institution_id}}"
+        },
+        {
+          "user_condition": {
+            "role": "admissions"
+          }
+        }
+      ]
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "read": {
+      "data.institution_id": "{{user.data.institution_id}}"
+    },
+    "update": {
+      "data.institution_id": "{{user.data.institution_id}}"
+    }
+  },
+  "type": "object"
+}

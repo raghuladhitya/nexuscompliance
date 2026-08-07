@@ -24,6 +24,10 @@ import PaymentPlans from '@/pages/PaymentPlans';
 import Communications from '@/pages/Communications';
 import AdminSettings from '@/pages/AdminSettings';
 import AuditLog from '@/pages/AuditLog';
+import Admissions from '@/pages/Admissions';
+import AcademicStructure from '@/pages/AcademicStructure';
+import DirectorDashboard from '@/pages/DirectorDashboard';
+import RoleGuard from '@/components/RoleGuard';
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
@@ -58,16 +62,19 @@ const AuthenticatedApp = () => {
       <Route path="/reset-password" element={<ResetPassword />} />
       <Route element={<ProtectedRoute unauthenticatedElement={<Navigate to="/login" replace />} />}>
         <Route element={<AppLayout />}>
-          <Route path="/" element={<Dashboard />} />
-          <Route path="/students" element={<Student360 />} />
-          <Route path="/attendance" element={<Attendance />} />
-          <Route path="/hesa" element={<HesaReturn />} />
-          <Route path="/reports" element={<ReportBuilder />} />
-          <Route path="/withdrawals" element={<WithdrawalWorkflow />} />
-          <Route path="/finance" element={<PaymentPlans />} />
-          <Route path="/communications" element={<Communications />} />
-          <Route path="/settings" element={<AdminSettings />} />
-          <Route path="/audit" element={<AuditLog />} />
+          <Route path="/" element={<RoleGuard path="/"><Dashboard /></RoleGuard>} />
+          <Route path="/director" element={<RoleGuard path="/director"><DirectorDashboard /></RoleGuard>} />
+          <Route path="/admissions" element={<RoleGuard path="/admissions"><Admissions /></RoleGuard>} />
+          <Route path="/academic-structure" element={<RoleGuard path="/academic-structure"><AcademicStructure /></RoleGuard>} />
+          <Route path="/students" element={<RoleGuard path="/students"><Student360 /></RoleGuard>} />
+          <Route path="/attendance" element={<RoleGuard path="/attendance"><Attendance /></RoleGuard>} />
+          <Route path="/hesa" element={<RoleGuard path="/hesa"><HesaReturn /></RoleGuard>} />
+          <Route path="/reports" element={<RoleGuard path="/reports"><ReportBuilder /></RoleGuard>} />
+          <Route path="/withdrawals" element={<RoleGuard path="/withdrawals"><WithdrawalWorkflow /></RoleGuard>} />
+          <Route path="/finance" element={<RoleGuard path="/finance"><PaymentPlans /></RoleGuard>} />
+          <Route path="/communications" element={<RoleGuard path="/communications"><Communications /></RoleGuard>} />
+          <Route path="/settings" element={<RoleGuard path="/settings"><AdminSettings /></RoleGuard>} />
+          <Route path="/audit" element={<RoleGuard path="/audit"><AuditLog /></RoleGuard>} />
         </Route>
       </Route>
       <Route path="*" element={<PageNotFound />} />

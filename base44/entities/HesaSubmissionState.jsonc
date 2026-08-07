@@ -1,0 +1,75 @@
+{
+  "description": "Replaces manual check/uncheck memory: tracks per-enrolment whether it was previously submitted, whether anything HESA-relevant has changed since, and whether Registry needs to act.",
+  "name": "HesaSubmissionState",
+  "properties": {
+    "academic_year": {
+      "description": "e.g. 2025/26",
+      "type": "string"
+    },
+    "change_trigger": {
+      "description": "What caused a needs_review state, e.g. withdrawal, break_in_study, funding_change",
+      "type": "string"
+    },
+    "enrolment_id": {
+      "type": "string"
+    },
+    "institution_id": {
+      "type": "string"
+    },
+    "last_submitted_date": {
+      "format": "date",
+      "type": "string"
+    },
+    "status": {
+      "enum": [
+        "not_yet_submitted",
+        "submitted_no_change_needed",
+        "needs_review",
+        "review_in_progress",
+        "resubmission_required"
+      ],
+      "type": "string"
+    }
+  },
+  "required": [
+    "enrolment_id",
+    "academic_year",
+    "status",
+    "institution_id"
+  ],
+  "rls": {
+    "create": {
+      "data.institution_id": "{{user.data.institution_id}}"
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "read": {
+      "data.institution_id": "{{user.data.institution_id}}"
+    },
+    "update": {
+      "$and": [
+        {
+          "data.institution_id": "{{user.data.institution_id}}"
+        },
+        {
+          "$or": [
+            {
+              "user_condition": {
+                "role": "registry"
+              }
+            },
+            {
+              "user_condition": {
+                "role": "admin"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "type": "object"
+}

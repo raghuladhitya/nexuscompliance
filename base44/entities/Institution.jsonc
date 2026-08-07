@@ -1,0 +1,41 @@
+{
+  "name": "Institution",
+  "properties": {
+    "hesa_provider_code": {
+      "description": "HESA provider identifier",
+      "type": "string"
+    },
+    "name": {
+      "description": "Institution name",
+      "type": "string"
+    },
+    "ukprn": {
+      "description": "UK Provider Reference Number",
+      "type": "string"
+    }
+  },
+  "required": [
+    "name"
+  ],
+  "rls": {
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "read": {
+      "id": "{{user.data.institution_id}}"
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  },
+  "type": "object"
+}

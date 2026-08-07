@@ -1,0 +1,84 @@
+{
+  "name": "AuditEntry",
+  "description": "Append-only audit trail. Every edit to a student or compliance-relevant record writes an entry here. Records are never updated or deleted \u2014 corrections create new entries, so history cannot disappear.",
+  "type": "object",
+  "properties": {
+    "action": {
+      "type": "string",
+      "enum": [
+        "create",
+        "update",
+        "delete",
+        "field_change",
+        "system"
+      ],
+      "description": "Type of action performed"
+    },
+    "entity_name": {
+      "type": "string",
+      "description": "e.g. Student, Enrolment, Cohort, HesaSubmissionStatus"
+    },
+    "record_id": {
+      "type": "string"
+    },
+    "field_name": {
+      "type": "string",
+      "description": "Field changed, if applicable"
+    },
+    "old_value": {
+      "type": "string"
+    },
+    "new_value": {
+      "type": "string"
+    },
+    "changed_by_id": {
+      "type": "string"
+    },
+    "changed_by_name": {
+      "type": "string"
+    },
+    "source_team": {
+      "type": "string",
+      "enum": [
+        "admissions",
+        "academic",
+        "registry",
+        "finance",
+        "compliance",
+        "system"
+      ]
+    },
+    "reason": {
+      "type": "string"
+    },
+    "institution_id": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "action",
+    "entity_name",
+    "record_id",
+    "changed_by_id",
+    "source_team",
+    "institution_id"
+  ],
+  "rls": {
+    "read": {
+      "data.institution_id": "{{user.data.institution_id}}"
+    },
+    "create": {
+      "data.institution_id": "{{user.data.institution_id}}"
+    },
+    "update": {
+      "user_condition": {
+        "role": "__immutable__"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "__immutable__"
+      }
+    }
+  }
+}

@@ -1,0 +1,67 @@
+{
+  "description": "Append-only provenance log. Every change to a HESA-impacting field is recorded here with old value, new value, who, when, and source team. Records are never updated or deleted, only created.",
+  "name": "FieldChangeHistory",
+  "properties": {
+    "changed_by_id": {
+      "type": "string"
+    },
+    "entity_name": {
+      "description": "e.g. Enrolment, Student",
+      "type": "string"
+    },
+    "field_name": {
+      "type": "string"
+    },
+    "institution_id": {
+      "type": "string"
+    },
+    "new_value": {
+      "type": "string"
+    },
+    "old_value": {
+      "type": "string"
+    },
+    "reason": {
+      "type": "string"
+    },
+    "record_id": {
+      "type": "string"
+    },
+    "source_team": {
+      "enum": [
+        "admissions",
+        "academic",
+        "registry",
+        "system"
+      ],
+      "type": "string"
+    }
+  },
+  "required": [
+    "entity_name",
+    "record_id",
+    "field_name",
+    "changed_by_id",
+    "source_team",
+    "institution_id"
+  ],
+  "rls": {
+    "create": {
+      "data.institution_id": "{{user.data.institution_id}}"
+    },
+    "delete": {
+      "user_condition": {
+        "role": "__immutable__"
+      }
+    },
+    "read": {
+      "data.institution_id": "{{user.data.institution_id}}"
+    },
+    "update": {
+      "user_condition": {
+        "role": "__immutable__"
+      }
+    }
+  },
+  "type": "object"
+}

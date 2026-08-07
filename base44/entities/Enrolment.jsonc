@@ -1,0 +1,99 @@
+{
+  "description": "One study instance for a Student on a Course/Cohort. A single Student can have multiple Enrolments over time (reattempts, transfers, provider changes) without fragmenting identity.",
+  "name": "Enrolment",
+  "properties": {
+    "break_start_date": {
+      "format": "date",
+      "type": "string"
+    },
+    "cohort_id": {
+      "type": "string"
+    },
+    "course_id": {
+      "type": "string"
+    },
+    "institution_id": {
+      "type": "string"
+    },
+    "resumption_date": {
+      "format": "date",
+      "type": "string"
+    },
+    "start_date": {
+      "format": "date",
+      "type": "string"
+    },
+    "status": {
+      "enum": [
+        "active",
+        "withdrawn",
+        "break_in_study",
+        "resumed",
+        "completed",
+        "transferred"
+      ],
+      "type": "string"
+    },
+    "student_id": {
+      "type": "string"
+    },
+    "withdrawal_date": {
+      "format": "date",
+      "type": "string"
+    },
+    "withdrawal_reason": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "student_id",
+    "course_id",
+    "start_date",
+    "status",
+    "institution_id"
+  ],
+  "rls": {
+    "create": {
+      "$and": [
+        {
+          "data.institution_id": "{{user.data.institution_id}}"
+        },
+        {
+          "user_condition": {
+            "role": "admissions"
+          }
+        }
+      ]
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "read": {
+      "data.institution_id": "{{user.data.institution_id}}"
+    },
+    "update": {
+      "$and": [
+        {
+          "data.institution_id": "{{user.data.institution_id}}"
+        },
+        {
+          "$or": [
+            {
+              "user_condition": {
+                "role": "registry"
+              }
+            },
+            {
+              "user_condition": {
+                "role": "admin"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "type": "object"
+}
