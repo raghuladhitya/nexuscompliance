@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useSearchParams } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import {
   Card, CardContent, CardHeader, CardTitle, CardDescription
@@ -19,10 +20,22 @@ const TYPE_META = {
   system: { icon: Eye, cls: "text-slate-600 bg-slate-100" },
 };
 
+const TEAM_CLS = {
+  admissions: "bg-sky-50 text-sky-700 border-sky-200",
+  academic: "bg-emerald-50 text-emerald-700 border-emerald-200",
+  registry: "bg-amber-50 text-amber-700 border-amber-200",
+  finance: "bg-violet-50 text-violet-700 border-violet-200",
+  compliance: "bg-rose-50 text-rose-700 border-rose-200",
+  admin: "bg-slate-100 text-slate-700 border-slate-300",
+  system: "bg-slate-50 text-slate-500 border-slate-200",
+};
+
 export default function AuditLog() {
+  const [searchParams] = useSearchParams();
+  const recordFilter = searchParams.get("record") || "";
   const [entries, setEntries] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [query, setQuery] = useState("");
+  const [query, setQuery] = useState(recordFilter);
   const [userFilter, setUserFilter] = useState("");
   const [from, setFrom] = useState("");
 
@@ -39,7 +52,7 @@ export default function AuditLog() {
   }, []);
 
   const filtered = entries.filter(e => {
-    const hay = `${e.entity_name || ""} ${e.record_id || ""} ${e.action || ""} ${e.field_name || ""} ${e.changed_by_name || ""}`.toLowerCase();
+    const hay = `${e.entity_name || ""} ${e.record_id || ""} ${e.action || ""} ${e.field_name || ""} ${e.changed_by_name || ""} ${e.source_team || ""}`.toLowerCase();
     const matchesQuery = hay.includes(query.toLowerCase());
     const matchesUser = userFilter === "" || (e.changed_by_name || "").toLowerCase().includes(userFilter.toLowerCase());
     const matchesFrom = from === "" || (e.created_date || "") >= from;
@@ -93,7 +106,7 @@ export default function AuditLog() {
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead>Type</TableHead><TableHead>User</TableHead><TableHead>Action</TableHead>
+                    <TableHead>Type</TableHead><TableHead>User</TableHead><TableHead>Team</TableHead><TableHead>Action</TableHead>
                     <TableHead>Record</TableHead><TableHead>Change</TableHead><TableHead>Timestamp</TableHead>
                   </TableRow>
                 </TableHeader>
@@ -106,6 +119,11 @@ export default function AuditLog() {
                           <div className={`h-8 w-8 rounded-lg flex items-center justify-center ${meta.cls}`}><meta.icon className="h-4 w-4" /></div>
                         </TableCell>
                         <TableCell className="text-sm font-medium">{l.changed_by_name || "—"}</TableCell>
+                        <TableCell>
+                          {l.source_team ? (
+                            <Badge variant="outline" className={TEAM_CLS[l.source_team] || "bg-slate-50 text-slate-600 border-slate-200"}>{l.source_team}</Badge>
+                          ) : <span className="text-muted-foreground text-sm">—</span>}
+                        </TableCell>
                         <TableCell className="text-sm capitalize">{l.action?.replace("_", " ")}</TableCell>
                         <TableCell className="text-sm text-muted-foreground">{l.entity_name} · {l.record_id}</TableCell>
                         <TableCell className="text-sm">
