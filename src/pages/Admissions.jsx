@@ -12,6 +12,7 @@ import {
   Table, TableHeader, TableBody, TableRow, TableHead, TableCell
 } from "@/components/ui/table";
 import { UserPlus, CheckCircle2, Search, X } from "lucide-react";
+import { logAudit } from "@/lib/auditLog";
 
 const COURSES = ["BSc Computer Science", "BSc Data Science", "BEng Mechanical", "BA History", "MSc Data Science"];
 const INTAKES = ["Sep 2026", "Jan 2027"];
@@ -50,7 +51,7 @@ export default function Admissions() {
     }
     setSaving(true); setError("");
     try {
-      await base44.entities.Student.create({
+      const created = await base44.entities.Student.create({
         first_name: form.first_name,
         last_name: form.last_name,
         contact_email: form.contact_email || undefined,
@@ -59,6 +60,13 @@ export default function Admissions() {
         course_applied: form.course_applied,
         intake: form.intake,
         institution_id: institutionId,
+      });
+      await logAudit(user, {
+        action: "create",
+        entity_name: "Student",
+        record_id: created?.id,
+        source_team: "admissions",
+        reason: `Induction intake — ${form.course_applied}, ${form.intake}`,
       });
       setForm({ first_name: "", last_name: "", contact_email: "", person_code: "", date_of_birth: "", course_applied: COURSES[0], intake: INTAKES[0] });
       setShowForm(false);
