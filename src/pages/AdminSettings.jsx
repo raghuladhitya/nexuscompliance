@@ -1,4 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { base44 } from "@/api/base44Client";
+import { useAuth } from "@/lib/AuthContext";
+import { logAudit } from "@/lib/auditLog";
 import {
   Card, CardContent, CardHeader, CardTitle, CardDescription
 } from "@/components/ui/card";
@@ -6,22 +9,13 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Switch } from "@/components/ui/switch";
 import {
   Plus, Trash2, ShieldCheck, Database, RefreshCw, CheckCircle2, XCircle
 } from "lucide-react";
 import ProviderProfile from "@/components/admin/ProviderProfile";
+import { ROLE_LABELS } from "@/lib/roles";
 
-const ROLES = ["Registry", "Compliance", "Finance", "Academic", "Senior Mgmt"];
-const PERMISSIONS = ["View students", "Edit records", "Withdrawals", "HESA submit", "Finance", "Audit log"];
-
-const INITIAL_MATRIX = {
-  Registry: [true, true, true, false, false, false],
-  Compliance: [true, false, false, true, false, true],
-  Finance: [true, false, false, false, true, false],
-  Academic: [true, true, false, false, false, false],
-  "Senior Mgmt": [true, false, false, true, true, true],
-};
+const ASSIGNABLE_ROLES = Object.keys(ROLE_LABELS).filter(r => r !== "user");
 
 const FIELDS = [
   { name: "Crisis contact", type: "Text", entity: "Student" },
