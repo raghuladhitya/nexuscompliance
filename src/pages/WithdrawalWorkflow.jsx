@@ -10,7 +10,7 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
-  CheckCircle2, ChevronRight, ChevronLeft, Mail, Wallet, Users,
+  CheckCircle2, ChevronRight, ChevronLeft, Mail, Wallet,
   ScrollText, Calendar, AlertTriangle, Check, Search
 } from "lucide-react";
 
