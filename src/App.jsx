@@ -28,9 +28,10 @@ import Admissions from '@/pages/Admissions';
 import AcademicStructure from '@/pages/AcademicStructure';
 import DirectorDashboard from '@/pages/DirectorDashboard';
 import RoleGuard from '@/components/RoleGuard';
+import ClaimWorkspace from '@/pages/ClaimWorkspace';
 
 const AuthenticatedApp = () => {
-  const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
+  const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin, isAuthenticated, user } = useAuth();
 
   // Show loading spinner while checking app public settings or auth
   if (isLoadingPublicSettings || isLoadingAuth) {
@@ -50,6 +51,14 @@ const AuthenticatedApp = () => {
       navigateToLogin();
       return null;
     }
+  }
+
+  // A signed-in user with no team role yet (fresh registration, or Google
+  // sign-in with no invite) has no route they're allowed to reach — every
+  // route requires a specific role. Intercept here rather than letting
+  // RoleGuard bounce them in a redirect loop.
+  if (isAuthenticated && (!user?.role || user.role === "user")) {
+    return <ClaimWorkspace />;
   }
 
   // Render the main app
