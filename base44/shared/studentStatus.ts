@@ -143,6 +143,28 @@ export async function recalcEngagement(svc, eng, academicYear = "2025/26") {
   const existingState = await svc.entities.HesaSubmissionState.filter(
     { enrolment_id: eng.id, academic_year: academicYear }, "-created_date", 1
   );
+
+  // PROVENANCE: if the derived label actually changed since the last
+  // recalculation, write an immutable system audit entry. This is what makes
+  // the readiness engine's decisions visible/auditable rather than a silent
+  // background recompute. Best-effort — never blocks the recalculation.
+  const previousLabel = existingState[0]?.change_trigger;
+  if (previousLabel && previousLabel !== label) {
+    await svc.entities.AuditEntry.create({
+      action: "field_change",
+      entity_name: "Engagement",
+      record_id: eng.id,
+      field_name: "status_label",
+      old_value: previousLabel,
+      new_value: label,
+      changed_by_id: "system",
+      changed_by_name: "HESA Readiness Engine",
+      source_team: "system",
+      reason: "Automatic recalculation triggered by an underlying HESA record change",
+      institution_id: eng.institution_id,
+    }).catch(() => {});
+  }
+
   const statePayload = {
     enrolment_id: eng.id,
     academic_year: academicYear,
