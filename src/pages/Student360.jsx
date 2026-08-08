@@ -11,6 +11,7 @@ import {
   CheckCircle2, Clock, PoundSterling, Calendar, Send, FileText, FileSignature
 } from "lucide-react";
 import { base44 } from "@/api/base44Client";
+import { useNavigate } from "react-router-dom";
 import RegistrationCard from "@/components/student/RegistrationCard";
 import AttendanceWeekly from "@/components/student/AttendanceWeekly";
 import ChangeOfCircumstances from "@/components/student/ChangeOfCircumstances";
@@ -41,6 +42,7 @@ const TONE_CLASSES = {
 };
 
 export default function Student360() {
+  const navigate = useNavigate();
   const [showMerge, setShowMerge] = useState(true);
   const [student, setStudent] = useState(null);
 
@@ -78,7 +80,7 @@ export default function Student360() {
         </div>
         <div className="flex gap-2">
           <Button variant="outline"><Mail className="h-4 w-4 mr-2" /> Message</Button>
-          <Button>View audit trail</Button>
+          <Button onClick={() => navigate(`/audit?record=${encodeURIComponent(student?.id || displayCode)}`)}>View audit trail</Button>
         </div>
       </div>
 
