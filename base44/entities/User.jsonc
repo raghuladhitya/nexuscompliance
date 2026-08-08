@@ -23,5 +23,22 @@
     "role"
   ],
   "name": "User",
-  "type": "object"
+  "type": "object",
+  "rls": {
+    "read": {
+      "data.institution_id": "{{user.data.institution_id}}"
+    },
+    "update": {
+      "$and": [
+        {
+          "data.institution_id": "{{user.data.institution_id}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    }
+  }
 }
