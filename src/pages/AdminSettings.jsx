@@ -117,33 +117,39 @@ export default function AdminSettings() {
       </Card>
 
       <div className="grid lg:grid-cols-2 gap-6">
-        {/* Permissions matrix */}
+        {/* Users & roles */}
         <Card>
           <CardHeader>
-            <CardTitle className="text-base flex items-center gap-2"><ShieldCheck className="h-4 w-4 text-primary" /> Roles & permissions</CardTitle>
-            <CardDescription>Toggle what each role can do — no custom code.</CardDescription>
+            <CardTitle className="text-base flex items-center gap-2"><ShieldCheck className="h-4 w-4 text-primary" /> Users & roles</CardTitle>
+            <CardDescription>Every role change is written to the immutable audit log with who made it.</CardDescription>
           </CardHeader>
-          <CardContent className="overflow-x-auto">
-            <table className="w-full min-w-[460px]">
-              <thead>
-                <tr className="text-xs text-muted-foreground">
-                  <th className="text-left font-medium pb-2">Permission</th>
-                  {ROLES.map(r => <th key={r} className="font-medium pb-2 px-2 text-center">{r}</th>)}
-                </tr>
-              </thead>
-              <tbody>
-                {PERMISSIONS.map((p, pi) => (
-                  <tr key={p} className="border-t border-border">
-                    <td className="py-2.5 text-sm font-medium">{p}</td>
-                    {ROLES.map(r => (
-                      <td key={r} className="text-center py-2.5">
-                        <Switch checked={matrix[r][pi]} onCheckedChange={() => toggle(r, pi)} />
-                      </td>
-                    ))}
-                  </tr>
+          <CardContent>
+            {usersError && <div className="text-sm text-destructive mb-3">{usersError}</div>}
+            {usersLoading ? (
+              <div className="text-sm text-muted-foreground py-8 text-center">Loading…</div>
+            ) : users.length === 0 ? (
+              <div className="text-sm text-muted-foreground py-8 text-center">No other users found yet for this institution.</div>
+            ) : (
+              <div className="space-y-2">
+                {users.map(u => (
+                  <div key={u.id} className="flex items-center justify-between gap-3 rounded-lg border border-border p-3">
+                    <div className="min-w-0">
+                      <div className="text-sm font-medium truncate">{u.full_name || u.email || u.id}</div>
+                      <div className="text-xs text-muted-foreground truncate">{u.email}</div>
+                    </div>
+                    <select
+                      className="rounded-md border border-input bg-card px-2 py-1.5 text-sm shrink-0"
+                      value={u.role || "user"}
+                      disabled={savingUserId === u.id}
+                      onChange={e => changeRole(u, e.target.value)}
+                    >
+                      <option value="user">Staff (no workspace)</option>
+                      {ASSIGNABLE_ROLES.map(r => <option key={r} value={r}>{ROLE_LABELS[r]}</option>)}
+                    </select>
+                  </div>
                 ))}
-              </tbody>
-            </table>
+              </div>
+            )}
           </CardContent>
         </Card>
 
