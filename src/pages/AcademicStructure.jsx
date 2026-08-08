@@ -11,6 +11,7 @@ import {
   Table, TableHeader, TableBody, TableRow, TableHead, TableCell
 } from "@/components/ui/table";
 import { Plus, X } from "lucide-react";
+import { logAudit } from "@/lib/auditLog";
 
 export default function AcademicStructure() {
   const { user } = useAuth();
@@ -69,8 +70,17 @@ export default function AcademicStructure() {
         end_date: form.end_date || undefined,
         institution_id: institutionId,
       };
-      if (tab === "cohorts") await base44.entities.Cohort.create(payload);
-      else await base44.entities.Unit.create(payload);
+      const entityName = tab === "cohorts" ? "Cohort" : "Unit";
+      const created = tab === "cohorts"
+        ? await base44.entities.Cohort.create(payload)
+        : await base44.entities.Unit.create(payload);
+      await logAudit(user, {
+        action: "create",
+        entity_name: entityName,
+        record_id: created?.id,
+        source_team: "academic",
+        reason: `Structure setup — ${form.name}`,
+      });
       setForm({ name: "", code: "", start_date: "", end_date: "" });
       setShowForm(false);
       await loadStructure();
