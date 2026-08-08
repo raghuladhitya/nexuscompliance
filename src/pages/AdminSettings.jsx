@@ -25,13 +25,49 @@ const FIELDS = [
 ];
 
 export default function AdminSettings() {
-  const [matrix, setMatrix] = useState(INITIAL_MATRIX);
+  const { user } = useAuth();
+  const [users, setUsers] = useState([]);
+  const [usersLoading, setUsersLoading] = useState(true);
+  const [savingUserId, setSavingUserId] = useState(null);
+  const [usersError, setUsersError] = useState("");
   const [fields, setFields] = useState(FIELDS);
   const [newName, setNewName] = useState("");
   const [newType, setNewType] = useState("Text");
 
-  const toggle = (role, idx) => {
-    setMatrix(m => ({ ...m, [role]: m[role].map((v, i) => i === idx ? !v : v) }));
+  const loadUsers = async () => {
+    setUsersLoading(true); setUsersError("");
+    try {
+      const data = await base44.entities.User.list("-created_date", 200);
+      setUsers(data || []);
+    } catch (e) {
+      setUsers([]);
+      setUsersError(e?.message || "Couldn't load users (admin access required).");
+    }
+    setUsersLoading(false);
+  };
+
+  useEffect(() => { loadUsers(); }, []);
+
+  const changeRole = async (targetUser, newRole) => {
+    if (newRole === targetUser.role) return;
+    setSavingUserId(targetUser.id);
+    try {
+      await base44.entities.User.update(targetUser.id, { role: newRole });
+      await logAudit(user, {
+        action: "update",
+        entity_name: "User",
+        record_id: targetUser.id,
+        field_name: "role",
+        old_value: targetUser.role,
+        new_value: newRole,
+        source_team: "admin",
+        reason: `Role changed for ${targetUser.full_name || targetUser.email}`,
+      });
+      await loadUsers();
+    } catch (e) {
+      setUsersError(e?.message || "Couldn't update role.");
+    }
+    setSavingUserId(null);
   };
 
   const addField = () => {
