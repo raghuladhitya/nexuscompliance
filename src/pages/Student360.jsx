@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import {
   Card, CardContent, CardHeader, CardTitle, CardDescription
 } from "@/components/ui/card";
@@ -10,12 +10,10 @@ import {
   AlertTriangle, GitMerge, X, Mail, TrendingUp, TrendingDown,
   CheckCircle2, Clock, PoundSterling, Calendar, Send, FileText, FileSignature
 } from "lucide-react";
-import { base44 } from "@/api/base44Client";
 import { useNavigate } from "react-router-dom";
 import RegistrationCard from "@/components/student/RegistrationCard";
 import AttendanceWeekly from "@/components/student/AttendanceWeekly";
 import ChangeOfCircumstances from "@/components/student/ChangeOfCircumstances";
-import StudentStatusBadge from "@/components/student/StudentStatusBadge";
 
 const TIMELINE = [
   { date: "Sep 2021", label: "Enrolled", detail: "BSc Computer Science · Provider: Northbrook", tone: "sky" },
@@ -44,22 +42,6 @@ const TONE_CLASSES = {
 export default function Student360() {
   const navigate = useNavigate();
   const [showMerge, setShowMerge] = useState(true);
-  const [student, setStudent] = useState(null);
-
-  useEffect(() => {
-    (async () => {
-      try {
-        const data = await base44.entities.Student.list("-created_date", 1);
-        if (data && data[0]) setStudent(data[0]);
-      } catch (e) {
-        // no real student — keep mock header
-      }
-    })();
-  }, []);
-
-  const displayName = student ? `${student.first_name} ${student.last_name}` : "James Whitfield";
-  const displayCode = student ? student.person_code : "STU-2021-4471";
-  const displayEmail = student ? (student.contact_email || "—") : "j.whitfield@northbrook.ac.uk";
 
   return (
     <div className="space-y-6 animate-fade-in">
@@ -68,19 +50,17 @@ export default function Student360() {
         <div className="flex items-center gap-4">
           <div className="h-14 w-14 rounded-full bg-gradient-to-br from-slate-700 to-slate-900 flex items-center justify-center text-white text-lg font-semibold">JW</div>
           <div>
-            <h1 className="text-2xl font-semibold tracking-tight">{displayName}</h1>
+            <h1 className="text-2xl font-semibold tracking-tight">James Whitfield</h1>
             <div className="flex flex-wrap items-center gap-2 mt-1 text-sm text-muted-foreground">
-              <span>ID: {displayCode}</span><span>·</span>
-              <span>{displayEmail}</span><span>·</span>
-              {student
-                ? <StudentStatusBadge studentId={student.id} fallback="Withdrawn" />
-                : <Badge className="bg-rose-50 text-rose-700 border-rose-200 hover:bg-rose-50">Withdrawn</Badge>}
+              <span>ID: STU-2021-4471</span><span>·</span>
+              <span>j.whitfield@northbrook.ac.uk</span><span>·</span>
+              <Badge className="bg-rose-50 text-rose-700 border-rose-200 hover:bg-rose-50">Withdrawn</Badge>
             </div>
           </div>
         </div>
         <div className="flex gap-2">
           <Button variant="outline"><Mail className="h-4 w-4 mr-2" /> Message</Button>
-          <Button onClick={() => navigate(`/audit?record=${encodeURIComponent(student?.id || displayCode)}`)}>View audit trail</Button>
+          <Button onClick={() => navigate(`/audit?record=${encodeURIComponent("STU-2021-4471")}`)}>View audit trail</Button>
         </div>
       </div>
 
