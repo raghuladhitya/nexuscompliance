@@ -8,7 +8,7 @@ import {
 import { base44 } from "@/api/base44Client";
 
 const NAV = [
-  { to: "/", label: "Dashboard", icon: LayoutDashboard, end: true },
+  { to: "/", label: "Director Overview", icon: LayoutDashboard, end: true },
   { to: "/students", label: "Student 360", icon: Users },
   { to: "/attendance", label: "Attendance", icon: CalendarCheck },
   { to: "/hesa", label: "HESA Returns", icon: FileCheck2 },

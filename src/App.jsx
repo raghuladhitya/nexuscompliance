@@ -14,7 +14,7 @@ import Login from '@/pages/Login';
 import Register from '@/pages/Register';
 import ForgotPassword from '@/pages/ForgotPassword';
 import ResetPassword from '@/pages/ResetPassword';
-import Dashboard from '@/pages/Dashboard';
+import DirectorDashboard from '@/pages/DirectorDashboard';
 import Student360 from '@/pages/Student360';
 import Attendance from '@/pages/Attendance';
 import HesaReturn from '@/pages/HesaReturn';
@@ -58,7 +58,7 @@ const AuthenticatedApp = () => {
       <Route path="/reset-password" element={<ResetPassword />} />
       <Route element={<ProtectedRoute unauthenticatedElement={<Navigate to="/login" replace />} />}>
         <Route element={<AppLayout />}>
-          <Route path="/" element={<Dashboard />} />
+          <Route path="/" element={<DirectorDashboard />} />
           <Route path="/students" element={<Student360 />} />
           <Route path="/attendance" element={<Attendance />} />
           <Route path="/hesa" element={<HesaReturn />} />
