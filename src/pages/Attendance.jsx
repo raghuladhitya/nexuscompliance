@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input";
 import {
   Search, TrendingDown, AlertTriangle, X, CalendarCheck
 } from "lucide-react";
+import CohortTrendChart from "@/components/attendance/CohortTrendChart";
 
 const STUDENTS = [
   { name: "Priya Nair", id: "STU-2021-3390", risk: "high", weeks: [1,1,0,1,2,2,3,3,3,3] },
@@ -115,6 +116,8 @@ export default function Attendance() {
           </CardContent>
         </Card>
       </div>
+
+      <CohortTrendChart />
 
       {/* Detail panel */}
       {selected && (
