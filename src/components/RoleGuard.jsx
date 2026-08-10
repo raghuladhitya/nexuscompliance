@@ -1,14 +1,10 @@
 import React from "react";
-import { Navigate } from "react-router-dom";
-import { useAuth } from "@/lib/AuthContext";
-import { canAccess, homeForRole } from "@/lib/roles";
 
 // Enforces role-based access per route. Data access is additionally
 // restricted server-side by RLS on each entity.
+// Role-based access enforcement temporarily disabled while login/role
+// logic is in progress — all authenticated users can reach every route.
+// Data access remains restricted server-side by RLS on each entity.
 export default function RoleGuard({ path, children }) {
-  const { user } = useAuth();
-  if (!canAccess(user?.role, path)) {
-    return <Navigate to={homeForRole(user?.role)} replace />;
-  }
   return children;
 }

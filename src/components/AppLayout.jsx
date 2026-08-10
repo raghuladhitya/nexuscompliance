@@ -35,7 +35,8 @@ export default function AppLayout() {
   const navigate = useNavigate();
   const { user } = useAuth();
   const role = user?.role || "user";
-  const navItems = NAV.filter(n => n.roles.includes(role));
+  // Role-based nav filtering disabled while login/role logic is in progress.
+  const navItems = NAV;
   const userName = user?.full_name || user?.email || "User";
   const roleLabel = ROLE_LABELS[role] || "Staff";
   const initials = userName.split(" ").map(p => p[0] || "").slice(0, 2).join("").toUpperCase();
