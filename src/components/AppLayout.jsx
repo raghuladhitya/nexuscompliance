@@ -1,11 +1,13 @@
 import React, { useState } from "react";
-import { NavLink, Outlet, useNavigate } from "react-router-dom";
+import { NavLink, Outlet, useNavigate, useLocation, Navigate } from "react-router-dom";
 import {
   LayoutDashboard, Users, CalendarCheck, FileCheck2, BarChart3,
   GitBranch, Wallet, MessageSquare, Settings, ScrollText,
   Building2, ChevronDown, LogOut, GraduationCap, Menu, X, ShieldCheck
 } from "lucide-react";
 import { base44 } from "@/api/base44Client";
+import { useRole } from "@/lib/RoleContext";
+import RoleSwitcher from "@/components/RoleSwitcher";
 
 const NAV = [
   { to: "/", label: "Director Overview", icon: LayoutDashboard, end: true },
@@ -31,6 +33,13 @@ export default function AppLayout() {
   const [instOpen, setInstOpen] = useState(false);
   const [institution, setInstitution] = useState(INSTITUTIONS[0]);
 
+  const { roleConfig } = useRole();
+  const location = useLocation();
+  if (!roleConfig.allowed.includes(location.pathname)) {
+    return <Navigate to={roleConfig.home} replace />;
+  }
+  const nav = NAV.filter((item) => roleConfig.allowed.includes(item.to));
+
   const handleLogout = async () => {
     await base44.auth.logout("/login");
   };
@@ -47,7 +56,7 @@ export default function AppLayout() {
         </div>
       </div>
       <nav className="flex-1 overflow-y-auto px-3 py-4 space-y-0.5">
-        {NAV.map((item) => (
+        {nav.map((item) => (
           <NavLink
             key={item.to}
             to={item.to}
@@ -148,15 +157,7 @@ export default function AppLayout() {
               <ShieldCheck className="h-3.5 w-3.5" />
               Data isolated
             </div>
-            <div className="flex items-center gap-2.5 rounded-lg pl-1.5 pr-3 py-1 border border-border bg-card">
-              <div className="h-7 w-7 rounded-full bg-gradient-to-br from-slate-700 to-slate-900 flex items-center justify-center text-white text-xs font-semibold">
-                DR
-              </div>
-              <div className="hidden sm:block leading-tight">
-                <div className="text-xs font-semibold">Dana Roberts</div>
-                <div className="text-[11px] text-muted-foreground">Compliance Officer</div>
-              </div>
-            </div>
+            <RoleSwitcher />
           </div>
         </header>
 

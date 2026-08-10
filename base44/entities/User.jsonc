@@ -5,7 +5,11 @@
       "description": "The role of the user in the app",
       "enum": [
         "admin",
-        "user"
+        "user",
+        "ceo",
+        "quality_manager",
+        "registry_manager",
+        "finance_manager"
       ]
     }
   },
