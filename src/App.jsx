@@ -24,14 +24,9 @@ import PaymentPlans from '@/pages/PaymentPlans';
 import Communications from '@/pages/Communications';
 import AdminSettings from '@/pages/AdminSettings';
 import AuditLog from '@/pages/AuditLog';
-import Admissions from '@/pages/Admissions';
-import AcademicStructure from '@/pages/AcademicStructure';
-import DirectorDashboard from '@/pages/DirectorDashboard';
-import RoleGuard from '@/components/RoleGuard';
-import ClaimWorkspace from '@/pages/ClaimWorkspace';
 
 const AuthenticatedApp = () => {
-  const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin, isAuthenticated, user } = useAuth();
+  const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
 
   // Show loading spinner while checking app public settings or auth
   if (isLoadingPublicSettings || isLoadingAuth) {
@@ -53,14 +48,6 @@ const AuthenticatedApp = () => {
     }
   }
 
-  // A signed-in user with no team role yet (fresh registration, or Google
-  // sign-in with no invite) has no route they're allowed to reach — every
-  // route requires a specific role. Intercept here rather than letting
-  // RoleGuard bounce them in a redirect loop.
-  if (isAuthenticated && (!user?.role || user.role === "user")) {
-    return <ClaimWorkspace />;
-  }
-
   // Render the main app
   return (
     <Routes>
@@ -71,19 +58,16 @@ const AuthenticatedApp = () => {
       <Route path="/reset-password" element={<ResetPassword />} />
       <Route element={<ProtectedRoute unauthenticatedElement={<Navigate to="/login" replace />} />}>
         <Route element={<AppLayout />}>
-          <Route path="/" element={<RoleGuard path="/"><Dashboard /></RoleGuard>} />
-          <Route path="/director" element={<RoleGuard path="/director"><DirectorDashboard /></RoleGuard>} />
-          <Route path="/admissions" element={<RoleGuard path="/admissions"><Admissions /></RoleGuard>} />
-          <Route path="/academic-structure" element={<RoleGuard path="/academic-structure"><AcademicStructure /></RoleGuard>} />
-          <Route path="/students" element={<RoleGuard path="/students"><Student360 /></RoleGuard>} />
-          <Route path="/attendance" element={<RoleGuard path="/attendance"><Attendance /></RoleGuard>} />
-          <Route path="/hesa" element={<RoleGuard path="/hesa"><HesaReturn /></RoleGuard>} />
-          <Route path="/reports" element={<RoleGuard path="/reports"><ReportBuilder /></RoleGuard>} />
-          <Route path="/withdrawals" element={<RoleGuard path="/withdrawals"><WithdrawalWorkflow /></RoleGuard>} />
-          <Route path="/finance" element={<RoleGuard path="/finance"><PaymentPlans /></RoleGuard>} />
-          <Route path="/communications" element={<RoleGuard path="/communications"><Communications /></RoleGuard>} />
-          <Route path="/settings" element={<RoleGuard path="/settings"><AdminSettings /></RoleGuard>} />
-          <Route path="/audit" element={<RoleGuard path="/audit"><AuditLog /></RoleGuard>} />
+          <Route path="/" element={<Dashboard />} />
+          <Route path="/students" element={<Student360 />} />
+          <Route path="/attendance" element={<Attendance />} />
+          <Route path="/hesa" element={<HesaReturn />} />
+          <Route path="/reports" element={<ReportBuilder />} />
+          <Route path="/withdrawals" element={<WithdrawalWorkflow />} />
+          <Route path="/finance" element={<PaymentPlans />} />
+          <Route path="/communications" element={<Communications />} />
+          <Route path="/settings" element={<AdminSettings />} />
+          <Route path="/audit" element={<AuditLog />} />
         </Route>
       </Route>
       <Route path="*" element={<PageNotFound />} />

@@ -1,20 +1,26 @@
-import React, { useState, useEffect } from "react";
-import { base44 } from "@/api/base44Client";
-import { useAuth } from "@/lib/AuthContext";
-import { logAudit } from "@/lib/auditLog";
+import React, { useState } from "react";
 import {
   Card, CardContent, CardHeader, CardTitle, CardDescription
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Switch } from "@/components/ui/switch";
 import {
   Plus, Trash2, ShieldCheck, Database, RefreshCw, CheckCircle2, XCircle
 } from "lucide-react";
-import ProviderProfile from "@/components/admin/ProviderProfile";
-import { ROLE_LABELS } from "@/lib/roles";
 
-const ASSIGNABLE_ROLES = Object.keys(ROLE_LABELS).filter(r => r !== "user");
+const ROLES = ["Registry", "Compliance", "Finance", "Academic", "Senior Mgmt"];
+const PERMISSIONS = ["View students", "Edit records", "Withdrawals", "HESA submit", "Finance", "Audit log"];
+
+const INITIAL_MATRIX = {
+  Registry: [true, true, true, false, false, false],
+  Compliance: [true, false, false, true, false, true],
+  Finance: [true, false, false, false, true, false],
+  Academic: [true, true, false, false, false, false],
+  "Senior Mgmt": [true, false, false, true, true, true],
+};
 
 const FIELDS = [
   { name: "Crisis contact", type: "Text", entity: "Student" },
@@ -24,49 +30,13 @@ const FIELDS = [
 ];
 
 export default function AdminSettings() {
-  const { user } = useAuth();
-  const [users, setUsers] = useState([]);
-  const [usersLoading, setUsersLoading] = useState(true);
-  const [savingUserId, setSavingUserId] = useState(null);
-  const [usersError, setUsersError] = useState("");
+  const [matrix, setMatrix] = useState(INITIAL_MATRIX);
   const [fields, setFields] = useState(FIELDS);
   const [newName, setNewName] = useState("");
   const [newType, setNewType] = useState("Text");
 
-  const loadUsers = async () => {
-    setUsersLoading(true); setUsersError("");
-    try {
-      const data = await base44.entities.User.list("-created_date", 200);
-      setUsers(data || []);
-    } catch (e) {
-      setUsers([]);
-      setUsersError(e?.message || "Couldn't load users (admin access required).");
-    }
-    setUsersLoading(false);
-  };
-
-  useEffect(() => { loadUsers(); }, []);
-
-  const changeRole = async (targetUser, newRole) => {
-    if (newRole === targetUser.role) return;
-    setSavingUserId(targetUser.id);
-    try {
-      await base44.entities.User.update(targetUser.id, { role: newRole });
-      await logAudit(user, {
-        action: "update",
-        entity_name: "User",
-        record_id: targetUser.id,
-        field_name: "role",
-        old_value: targetUser.role,
-        new_value: newRole,
-        source_team: "admin",
-        reason: `Role changed for ${targetUser.full_name || targetUser.email}`,
-      });
-      await loadUsers();
-    } catch (e) {
-      setUsersError(e?.message || "Couldn't update role.");
-    }
-    setSavingUserId(null);
+  const toggle = (role, idx) => {
+    setMatrix(m => ({ ...m, [role]: m[role].map((v, i) => i === idx ? !v : v) }));
   };
 
   const addField = () => {
@@ -81,8 +51,6 @@ export default function AdminSettings() {
         <h1 className="text-2xl font-semibold tracking-tight">Admin & Settings</h1>
         <p className="text-sm text-muted-foreground mt-0.5">Configure roles, fields and data sources — no engineering work.</p>
       </div>
-
-      <ProviderProfile />
 
       {/* Data source status */}
       <Card>
@@ -116,39 +84,33 @@ export default function AdminSettings() {
       </Card>
 
       <div className="grid lg:grid-cols-2 gap-6">
-        {/* Users & roles */}
+        {/* Permissions matrix */}
         <Card>
           <CardHeader>
-            <CardTitle className="text-base flex items-center gap-2"><ShieldCheck className="h-4 w-4 text-primary" /> Users & roles</CardTitle>
-            <CardDescription>Every role change is written to the immutable audit log with who made it.</CardDescription>
+            <CardTitle className="text-base flex items-center gap-2"><ShieldCheck className="h-4 w-4 text-primary" /> Roles & permissions</CardTitle>
+            <CardDescription>Toggle what each role can do — no custom code.</CardDescription>
           </CardHeader>
-          <CardContent>
-            {usersError && <div className="text-sm text-destructive mb-3">{usersError}</div>}
-            {usersLoading ? (
-              <div className="text-sm text-muted-foreground py-8 text-center">Loading…</div>
-            ) : users.length === 0 ? (
-              <div className="text-sm text-muted-foreground py-8 text-center">No other users found yet for this institution.</div>
-            ) : (
-              <div className="space-y-2">
-                {users.map(u => (
-                  <div key={u.id} className="flex items-center justify-between gap-3 rounded-lg border border-border p-3">
-                    <div className="min-w-0">
-                      <div className="text-sm font-medium truncate">{u.full_name || u.email || u.id}</div>
-                      <div className="text-xs text-muted-foreground truncate">{u.email}</div>
-                    </div>
-                    <select
-                      className="rounded-md border border-input bg-card px-2 py-1.5 text-sm shrink-0"
-                      value={u.role || "user"}
-                      disabled={savingUserId === u.id}
-                      onChange={e => changeRole(u, e.target.value)}
-                    >
-                      <option value="user">Staff (no workspace)</option>
-                      {ASSIGNABLE_ROLES.map(r => <option key={r} value={r}>{ROLE_LABELS[r]}</option>)}
-                    </select>
-                  </div>
+          <CardContent className="overflow-x-auto">
+            <table className="w-full min-w-[460px]">
+              <thead>
+                <tr className="text-xs text-muted-foreground">
+                  <th className="text-left font-medium pb-2">Permission</th>
+                  {ROLES.map(r => <th key={r} className="font-medium pb-2 px-2 text-center">{r}</th>)}
+                </tr>
+              </thead>
+              <tbody>
+                {PERMISSIONS.map((p, pi) => (
+                  <tr key={p} className="border-t border-border">
+                    <td className="py-2.5 text-sm font-medium">{p}</td>
+                    {ROLES.map(r => (
+                      <td key={r} className="text-center py-2.5">
+                        <Switch checked={matrix[r][pi]} onCheckedChange={() => toggle(r, pi)} />
+                      </td>
+                    ))}
+                  </tr>
                 ))}
-              </div>
-            )}
+              </tbody>
+            </table>
           </CardContent>
         </Card>
 

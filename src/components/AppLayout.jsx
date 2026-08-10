@@ -3,27 +3,21 @@ import { NavLink, Outlet, useNavigate } from "react-router-dom";
 import {
   LayoutDashboard, Users, CalendarCheck, FileCheck2, BarChart3,
   GitBranch, Wallet, MessageSquare, Settings, ScrollText,
-  Building2, ChevronDown, LogOut, GraduationCap, Menu, X, ShieldCheck,
-  UserPlus, CalendarRange, TrendingUp
+  Building2, ChevronDown, LogOut, GraduationCap, Menu, X, ShieldCheck
 } from "lucide-react";
 import { base44 } from "@/api/base44Client";
-import { useAuth } from "@/lib/AuthContext";
-import { ROLE_LABELS } from "@/lib/roles";
 
 const NAV = [
-  { to: "/", label: "Dashboard", icon: LayoutDashboard, end: true, roles: ["admin"] },
-  { to: "/director", label: "Director View", icon: TrendingUp, roles: ["admin", "management"] },
-  { to: "/admissions", label: "Admissions", icon: UserPlus, roles: ["admin", "admissions"] },
-  { to: "/academic-structure", label: "Academic Structure", icon: CalendarRange, roles: ["admin", "academic"] },
-  { to: "/students", label: "Student 360", icon: Users, roles: ["admin", "admissions", "academic", "registry", "finance", "compliance"] },
-  { to: "/attendance", label: "Attendance", icon: CalendarCheck, roles: ["admin", "academic"] },
-  { to: "/hesa", label: "HESA Return", icon: FileCheck2, roles: ["admin", "registry", "compliance"] },
-  { to: "/reports", label: "Report Builder", icon: BarChart3, roles: ["admin", "compliance"] },
-  { to: "/withdrawals", label: "Withdrawals", icon: GitBranch, roles: ["admin", "registry"] },
-  { to: "/finance", label: "Finance & Plans", icon: Wallet, roles: ["admin", "finance"] },
-  { to: "/communications", label: "Communications", icon: MessageSquare, roles: ["admin", "registry"] },
-  { to: "/audit", label: "Audit Log", icon: ScrollText, roles: ["admin", "compliance"] },
-  { to: "/settings", label: "Admin & Settings", icon: Settings, roles: ["admin"] },
+  { to: "/", label: "Dashboard", icon: LayoutDashboard, end: true },
+  { to: "/students", label: "Student 360", icon: Users },
+  { to: "/attendance", label: "Attendance", icon: CalendarCheck },
+  { to: "/hesa", label: "HESA Returns", icon: FileCheck2 },
+  { to: "/reports", label: "Report Builder", icon: BarChart3 },
+  { to: "/withdrawals", label: "Withdrawals", icon: GitBranch },
+  { to: "/finance", label: "Finance & Plans", icon: Wallet },
+  { to: "/communications", label: "Communications", icon: MessageSquare },
+  { to: "/settings", label: "Admin & Settings", icon: Settings },
+  { to: "/audit", label: "Audit Log", icon: ScrollText },
 ];
 
 const INSTITUTIONS = [
@@ -33,13 +27,6 @@ const INSTITUTIONS = [
 
 export default function AppLayout() {
   const navigate = useNavigate();
-  const { user } = useAuth();
-  const role = user?.role || "user";
-  // Role-based nav filtering disabled while login/role logic is in progress.
-  const navItems = NAV;
-  const userName = user?.full_name || user?.email || "User";
-  const roleLabel = ROLE_LABELS[role] || "Staff";
-  const initials = userName.split(" ").map(p => p[0] || "").slice(0, 2).join("").toUpperCase();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [instOpen, setInstOpen] = useState(false);
   const [institution, setInstitution] = useState(INSTITUTIONS[0]);
@@ -60,7 +47,7 @@ export default function AppLayout() {
         </div>
       </div>
       <nav className="flex-1 overflow-y-auto px-3 py-4 space-y-0.5">
-        {navItems.map((item) => (
+        {NAV.map((item) => (
           <NavLink
             key={item.to}
             to={item.to}
@@ -163,11 +150,11 @@ export default function AppLayout() {
             </div>
             <div className="flex items-center gap-2.5 rounded-lg pl-1.5 pr-3 py-1 border border-border bg-card">
               <div className="h-7 w-7 rounded-full bg-gradient-to-br from-slate-700 to-slate-900 flex items-center justify-center text-white text-xs font-semibold">
-                {initials}
+                DR
               </div>
               <div className="hidden sm:block leading-tight">
-                <div className="text-xs font-semibold">{userName}</div>
-                <div className="text-[11px] text-muted-foreground">{roleLabel}</div>
+                <div className="text-xs font-semibold">Dana Roberts</div>
+                <div className="text-[11px] text-muted-foreground">Compliance Officer</div>
               </div>
             </div>
           </div>
