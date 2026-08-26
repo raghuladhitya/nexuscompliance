@@ -22,9 +22,9 @@ const statusBadge = (s) =>
 
 function Field({ label, value, muted }) {
   return (
-    <div className="flex justify-between gap-3">
-      <span className="text-xs text-muted-foreground shrink-0">{label}</span>
-      <span className={`text-right text-sm ${muted ? "text-muted-foreground font-normal" : "font-medium"}`}>{value}</span>
+    <div className="space-y-1">
+      <div className="text-xs text-muted-foreground">{label}</div>
+      <div className={`text-sm ${muted ? "text-muted-foreground" : "font-medium"}`}>{value}</div>
     </div>
   );
 }
@@ -37,48 +37,49 @@ export default function ChangeOfCircumstance() {
         <CardDescription>Withdrawals, transfers, fee changes and resumptions — with dates and status.</CardDescription>
       </CardHeader>
       <CardContent>
-        {/* Table on wider screens */}
-        <div className="hidden md:block overflow-x-auto">
-          <table className="w-full min-w-[520px] text-sm">
+        {/* Wide: single row, 5 evenly-spaced columns */}
+        <div className="hidden lg:block overflow-x-auto">
+          <table className="w-full table-fixed text-sm">
             <thead>
               <tr className="text-xs text-muted-foreground border-b border-border">
-                <th className="text-left font-medium py-2.5">Student</th>
-                <th className="text-left font-medium py-2.5">Type</th>
-                <th className="text-left font-medium py-2.5">Date</th>
-                <th className="text-left font-medium py-2.5">Status</th>
-                <th className="text-left font-medium py-2.5">Detail</th>
+                <th className="text-left font-medium py-2.5 px-2">Student</th>
+                <th className="text-left font-medium py-2.5 px-2">Type</th>
+                <th className="text-left font-medium py-2.5 px-2">Date</th>
+                <th className="text-left font-medium py-2.5 px-2">Status</th>
+                <th className="text-left font-medium py-2.5 px-2">Detail</th>
               </tr>
             </thead>
             <tbody>
               {ROWS.map((r, i) => (
                 <tr key={i} className="border-b border-border last:border-0">
-                  <td className="py-3 font-medium">{r.name}</td>
-                  <td className="py-3">
+                  <td className="py-3 px-2 font-medium">{r.name}</td>
+                  <td className="py-3 px-2">
                     <div className="flex items-center gap-2">
                       <r.icon className="h-4 w-4 text-muted-foreground" />
                       {r.type}
                     </div>
                   </td>
-                  <td className="py-3">{r.date}</td>
-                  <td className="py-3"><Badge className={statusBadge(r.status)}>{r.status}</Badge></td>
-                  <td className="py-3 text-muted-foreground">{r.detail}</td>
+                  <td className="py-3 px-2">{r.date}</td>
+                  <td className="py-3 px-2"><Badge className={statusBadge(r.status)}>{r.status}</Badge></td>
+                  <td className="py-3 px-2 text-muted-foreground">{r.detail}</td>
                 </tr>
               ))}
             </tbody>
           </table>
         </div>
 
-        {/* Stacked, centered cards on narrow screens */}
-        <div className="md:hidden space-y-3">
+        {/* Tablet: 2 per row (2+2+1); Mobile: 1 per row, full width */}
+        <div className="lg:hidden space-y-3">
           {ROWS.map((r, i) => (
-            <div key={i} className="mx-auto max-w-md w-full rounded-lg border border-border p-4 space-y-2.5">
-              <div className="flex items-center justify-between gap-2">
-                <span className="text-sm font-medium">{r.name}</span>
-                <Badge className={statusBadge(r.status)}>{r.status}</Badge>
-              </div>
-              <div className="space-y-1.5">
-                <Field label="Type" value={<span className="inline-flex items-center gap-2"><r.icon className="h-4 w-4 text-muted-foreground" />{r.type}</span>} />
+            <div key={i} className="rounded-lg border border-border p-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-3">
+                <Field label="Student" value={r.name} />
+                <Field
+                  label="Type"
+                  value={<span className="inline-flex items-center gap-2"><r.icon className="h-4 w-4 text-muted-foreground" />{r.type}</span>}
+                />
                 <Field label="Date" value={r.date} />
+                <Field label="Status" value={<Badge className={statusBadge(r.status)}>{r.status}</Badge>} />
                 <Field label="Detail" value={r.detail} muted />
               </div>
             </div>
