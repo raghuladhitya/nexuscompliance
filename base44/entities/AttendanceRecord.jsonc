@@ -1,0 +1,31 @@
+{
+  "properties": {
+    "session_date": {
+      "format": "date",
+      "type": "string"
+    },
+    "status": {
+      "enum": [
+        "present",
+        "absent",
+        "late",
+        "authorized_absence"
+      ],
+      "type": "string"
+    },
+    "student_id": {
+      "description": "Reference to Student.id",
+      "type": "string"
+    },
+    "unit_or_session": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "student_id",
+    "session_date",
+    "status"
+  ],
+  "type": "object",
+  "name": "AttendanceRecord"
+}

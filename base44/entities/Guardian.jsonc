@@ -1,0 +1,33 @@
+{
+  "properties": {
+    "contact_email": {
+      "type": "string"
+    },
+    "contact_phone": {
+      "type": "string"
+    },
+    "name": {
+      "type": "string"
+    },
+    "relationship": {
+      "enum": [
+        "parent",
+        "guardian",
+        "sibling_contact",
+        "other"
+      ],
+      "type": "string"
+    },
+    "student_id": {
+      "description": "Reference to Student.id",
+      "type": "string"
+    }
+  },
+  "required": [
+    "student_id",
+    "name",
+    "relationship"
+  ],
+  "type": "object",
+  "name": "Guardian"
+}

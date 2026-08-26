@@ -1,0 +1,41 @@
+{
+  "properties": {
+    "active": {
+      "default": true,
+      "type": "boolean"
+    },
+    "assigned_cohorts": {
+      "description": "List of cohort names this staff member is assigned to",
+      "items": {
+        "type": "string"
+      },
+      "type": "array"
+    },
+    "contact_email": {
+      "type": "string"
+    },
+    "institution_id": {
+      "type": "string"
+    },
+    "name": {
+      "type": "string"
+    },
+    "role": {
+      "enum": [
+        "admissions",
+        "academic",
+        "registry",
+        "management",
+        "admin"
+      ],
+      "type": "string"
+    }
+  },
+  "required": [
+    "name",
+    "institution_id",
+    "role"
+  ],
+  "type": "object",
+  "name": "Staff"
+}

@@ -3,7 +3,8 @@ import { NavLink, Outlet, useNavigate, useLocation, Navigate } from "react-route
 import {
   LayoutDashboard, Users, CalendarCheck, FileCheck2, BarChart3,
   GitBranch, Wallet, MessageSquare, Settings, ScrollText,
-  Building2, ChevronDown, LogOut, GraduationCap, Menu, X, ShieldCheck
+  Building2, ChevronDown, LogOut, GraduationCap, Menu, X, ShieldCheck,
+  UserCog, Landmark
 } from "lucide-react";
 import { base44 } from "@/api/base44Client";
 import { useRole } from "@/lib/RoleContext";
@@ -18,6 +19,8 @@ const NAV = [
   { to: "/withdrawals", label: "Withdrawals", icon: GitBranch },
   { to: "/finance", label: "Finance & Plans", icon: Wallet },
   { to: "/communications", label: "Communications", icon: MessageSquare },
+  { to: "/staff", label: "Staff Directory", icon: UserCog },
+  { to: "/funding-status", label: "Funding Status", icon: Landmark },
   { to: "/settings", label: "Admin & Settings", icon: Settings },
   { to: "/audit", label: "Audit Log", icon: ScrollText },
 ];

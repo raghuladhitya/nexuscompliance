@@ -10,6 +10,10 @@ import {
   AlertTriangle, GitMerge, X, Mail, TrendingUp, TrendingDown,
   CheckCircle2, Clock, PoundSterling, Calendar, Send, FileText, FileSignature
 } from "lucide-react";
+import FamilySection from "@/components/student360/FamilySection";
+import FundingSection from "@/components/student360/FundingSection";
+import { useRole } from "@/lib/RoleContext";
+import { canSeeFamily, canSeeNotApproved } from "@/lib/roles";
 
 const TIMELINE = [
   { date: "Sep 2021", label: "Enrolled", detail: "BSc Computer Science · Provider: Northbrook", tone: "sky" },
@@ -37,6 +41,8 @@ const TONE_CLASSES = {
 
 export default function Student360() {
   const [showMerge, setShowMerge] = useState(true);
+  const { role } = useRole();
+  const studentId = "STU-2021-4471";
 
   return (
     <div className="space-y-6 animate-fade-in">
@@ -125,6 +131,8 @@ export default function Student360() {
           <TabsTrigger value="attendance">Attendance</TabsTrigger>
           <TabsTrigger value="performance">Performance</TabsTrigger>
           <TabsTrigger value="funding">Funding & Finance</TabsTrigger>
+          {canSeeFamily(role) && <TabsTrigger value="family">Family</TabsTrigger>}
+          {canSeeNotApproved(role) && <TabsTrigger value="funding-status">Funding Status</TabsTrigger>}
           <TabsTrigger value="communications">Communications</TabsTrigger>
           <TabsTrigger value="hesa">HESA Fields</TabsTrigger>
         </TabsList>
@@ -280,6 +288,18 @@ export default function Student360() {
             </CardContent>
           </Card>
         </TabsContent>
+
+        {canSeeFamily(role) && (
+          <TabsContent value="family" className="mt-4">
+            <FamilySection studentId={studentId} />
+          </TabsContent>
+        )}
+
+        {canSeeNotApproved(role) && (
+          <TabsContent value="funding-status" className="mt-4">
+            <FundingSection studentId={studentId} />
+          </TabsContent>
+        )}
       </Tabs>
     </div>
   );

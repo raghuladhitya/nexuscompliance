@@ -1,0 +1,40 @@
+{
+  "properties": {
+    "date_checked": {
+      "format": "date",
+      "type": "string"
+    },
+    "funding_source": {
+      "enum": [
+        "stp",
+        "self_pay",
+        "other"
+      ],
+      "type": "string"
+    },
+    "learner_approved": {
+      "default": false,
+      "type": "boolean"
+    },
+    "stp_status": {
+      "enum": [
+        "confirmed",
+        "pending",
+        "rejected"
+      ],
+      "type": "string"
+    },
+    "student_id": {
+      "description": "Reference to Student.id",
+      "type": "string"
+    }
+  },
+  "required": [
+    "student_id",
+    "funding_source",
+    "stp_status",
+    "learner_approved"
+  ],
+  "type": "object",
+  "name": "FundingStatus"
+}

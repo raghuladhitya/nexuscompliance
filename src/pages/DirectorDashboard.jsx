@@ -5,6 +5,7 @@ import ChangeOfCircumstance from "@/components/director/ChangeOfCircumstance";
 import ComplianceSnapshot from "@/components/director/ComplianceSnapshot";
 import FinanceSnapshot from "@/components/director/FinanceSnapshot";
 import RiskAlerts from "@/components/director/RiskAlerts";
+import ManagementKPIs from "@/components/director/ManagementKPIs";
 
 export default function DirectorDashboard() {
   return (
@@ -17,6 +18,8 @@ export default function DirectorDashboard() {
       </div>
 
       <DirectorKPIs />
+
+      <ManagementKPIs />
 
       <div className="grid lg:grid-cols-3 gap-6">
         <ComplianceSnapshot />

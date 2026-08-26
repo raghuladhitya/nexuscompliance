@@ -25,6 +25,8 @@ import PaymentPlans from '@/pages/PaymentPlans';
 import Communications from '@/pages/Communications';
 import AdminSettings from '@/pages/AdminSettings';
 import AuditLog from '@/pages/AuditLog';
+import StaffDirectory from '@/pages/StaffDirectory';
+import FundingStatus from '@/pages/FundingStatus';
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
@@ -67,6 +69,8 @@ const AuthenticatedApp = () => {
           <Route path="/withdrawals" element={<WithdrawalWorkflow />} />
           <Route path="/finance" element={<PaymentPlans />} />
           <Route path="/communications" element={<Communications />} />
+          <Route path="/staff" element={<StaffDirectory />} />
+          <Route path="/funding-status" element={<FundingStatus />} />
           <Route path="/settings" element={<AdminSettings />} />
           <Route path="/audit" element={<AuditLog />} />
         </Route>

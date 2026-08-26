@@ -1,0 +1,43 @@
+{
+  "properties": {
+    "cohort_name": {
+      "description": "Simple text reference to cohort/course, no FK yet",
+      "type": "string"
+    },
+    "first_name": {
+      "type": "string"
+    },
+    "institution_id": {
+      "description": "Tenant scoping field",
+      "type": "string"
+    },
+    "last_name": {
+      "type": "string"
+    },
+    "linked_student_id": {
+      "description": "If set, points to another Student record considered a sibling/family link at the same institution",
+      "type": "string"
+    },
+    "person_code": {
+      "description": "Unique institutional student identifier",
+      "type": "string"
+    },
+    "status": {
+      "enum": [
+        "active",
+        "withdrawn",
+        "completed",
+        "pending_induction"
+      ],
+      "type": "string"
+    }
+  },
+  "required": [
+    "person_code",
+    "first_name",
+    "last_name",
+    "institution_id"
+  ],
+  "type": "object",
+  "name": "Student"
+}

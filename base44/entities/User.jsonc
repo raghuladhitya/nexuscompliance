@@ -9,7 +9,10 @@
         "ceo",
         "quality_manager",
         "registry_manager",
-        "finance_manager"
+        "finance_manager",
+        "admissions",
+        "academic",
+        "management"
       ]
     }
   },
