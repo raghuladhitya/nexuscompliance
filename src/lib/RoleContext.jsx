@@ -2,7 +2,12 @@ import React, { createContext, useState, useContext, useEffect } from "react";
 import { useAuth } from "@/lib/AuthContext";
 import { ROLES } from "@/lib/roles";
 
-const RoleContext = createContext();
+const RoleContext = createContext({
+  role: "ceo",
+  roleConfig: ROLES.ceo,
+  setRole: () => {},
+  isDemo: false,
+});
 const STORAGE_KEY = "luminate.demoRole";
 
 export const RoleProvider = ({ children }) => {
