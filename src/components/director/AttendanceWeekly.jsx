@@ -1,7 +1,7 @@
 import {
   Card, CardContent, CardHeader, CardTitle, CardDescription
 } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
+import { StatusBadge } from "@/components/ui/status-badge";
 
 const ROWS = [
   { name: "Aisha Khan", id: "STU-2022-3340", w: [95, 92, 90, 88], confirmed: "06 Aug 2026" },
@@ -19,9 +19,9 @@ const avg = (w) => Math.round(w.reduce((a, b) => a + b, 0) / w.length);
 
 function ConfirmedBadge({ value }) {
   return value === "—" ? (
-    <Badge variant="outline" className="text-muted-foreground">Not confirmed</Badge>
+    <StatusBadge tone="neutral">Not confirmed</StatusBadge>
   ) : (
-    <Badge className="bg-emerald-50 text-emerald-700 border-emerald-200 hover:bg-emerald-50">{value}</Badge>
+    <StatusBadge tone="good">{value}</StatusBadge>
   );
 }
 

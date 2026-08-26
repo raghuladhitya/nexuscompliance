@@ -1,15 +1,18 @@
 import React, { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { StatusBadge } from "@/components/ui/status-badge";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription, SheetFooter } from "@/components/ui/sheet";
-import { UserCog, Plus, Search, Mail } from "lucide-react";
+import { UserCog, Plus, Search, Mail, Power } from "lucide-react";
+import PageHeader from "@/components/shared/PageHeader";
+import AttentionList from "@/components/shared/AttentionList";
 import { useRole } from "@/lib/RoleContext";
 import { canEditStaff } from "@/lib/roles";
-import { STAFF, cohorts as allCohorts, staffRoleTone } from "@/lib/records";
+import { STAFF, cohorts as allCohorts } from "@/lib/records";
 
 function initials(name) {
   return name.replace(/^(Dr\.|Prof\.|Mr\.|Mrs\.|Ms\.)\s*/i, "").split(" ").map((p) => p[0]).join("").slice(0, 2).toUpperCase();
@@ -22,6 +25,14 @@ function StatusDot({ active }) {
       {active ? "Active" : "Inactive"}
     </span>
   );
+}
+
+function staffRoleBadgeTone(role) {
+  const r = role.toLowerCase();
+  if (r.includes("lecturer") || r.includes("professor")) return "info";
+  if (r.includes("registrar")) return "violet";
+  if (r.includes("finance")) return "good";
+  return "neutral";
 }
 
 export default function StaffDirectory() {
@@ -37,6 +48,38 @@ export default function StaffDirectory() {
   const cohorts = allCohorts();
   const roleOptions = [...new Set(STAFF.map((s) => s.role))];
 
+  const toggleActive = (id) => setStaff((prev) => prev.map((s) => (s.id === id ? { ...s, active: !s.active } : s)));
+  const openRow = (s) => {
+    setSelected(s);
+    setDraft(canEdit ? { ...s } : null);
+  };
+  const handleSave = () => {
+    setStaff((prev) => prev.map((s) => (s.id === draft.id ? draft : s)));
+    setSelected(draft);
+    setDraft(null);
+  };
+
+  const unassigned = staff.filter((s) => s.cohorts.length === 0);
+  const inactive = staff.filter((s) => !s.active);
+  const attentionItems = [
+    ...unassigned.map((s) => ({
+      id: s.id + "-unassigned",
+      label: s.name,
+      description: `No cohort assignment · ${s.role}`,
+      meta: "Unassigned",
+      tone: "warning",
+      actions: canEdit ? [{ label: "Assign", onClick: () => openRow(s) }] : [],
+    })),
+    ...inactive.map((s) => ({
+      id: s.id + "-inactive",
+      label: s.name,
+      description: `Inactive · ${s.role}`,
+      meta: "Inactive",
+      tone: "neutral",
+      actions: canEdit ? [{ label: "Activate", variant: "default", onClick: () => toggleActive(s.id) }] : [],
+    })),
+  ];
+
   const filtered = staff.filter((s) => {
     const matchQuery = s.name.toLowerCase().includes(query.toLowerCase());
     const matchRole = roleFilter === "all" || s.role === roleFilter;
@@ -44,26 +87,20 @@ export default function StaffDirectory() {
     return matchQuery && matchRole && matchCohort;
   });
 
-  const openRow = (s) => {
-    setSelected(s);
-    setDraft(canEdit ? { ...s } : null);
-  };
-
-  const handleSave = () => {
-    setStaff((prev) => prev.map((s) => (s.id === draft.id ? draft : s)));
-    setSelected(draft);
-    setDraft(null);
-  };
-
   return (
     <div className="space-y-6 animate-fade-in">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-        <div>
-          <h1 className="text-2xl font-semibold tracking-tight">Staff Directory</h1>
-          <p className="text-sm text-muted-foreground mt-0.5">Staff records, cohort assignments and teaching lookup.</p>
-        </div>
-        {canEdit && <Button><Plus className="h-4 w-4 mr-1" /> Add staff</Button>}
-      </div>
+      <PageHeader
+        title="Staff Directory"
+        description="Staff records, cohort assignments and teaching lookup."
+        actions={canEdit && <Button><Plus className="h-4 w-4 mr-1" /> Add staff</Button>}
+      />
+
+      <AttentionList
+        title="Staff needing attention"
+        items={attentionItems}
+        empty="All staff are assigned and active."
+        icon={UserCog}
+      />
 
       <Card>
         <CardHeader className="flex-row items-center justify-between flex-wrap gap-3">
@@ -91,11 +128,12 @@ export default function StaffDirectory() {
                 <th className="text-left font-medium pb-2">Role</th>
                 <th className="text-left font-medium pb-2">Assigned cohorts</th>
                 <th className="text-left font-medium pb-2">Status</th>
+                {canEdit && <th className="text-left font-medium pb-2 w-20">Actions</th>}
               </tr>
             </thead>
             <tbody>
               {filtered.length === 0 && (
-                <tr><td colSpan={4} className="py-6 text-sm text-muted-foreground text-center">No staff match your filters.</td></tr>
+                <tr><td colSpan={canEdit ? 5 : 4} className="py-6 text-sm text-muted-foreground text-center">No staff match your filters.</td></tr>
               )}
               {filtered.map((s) => (
                 <tr
@@ -112,7 +150,7 @@ export default function StaffDirectory() {
                       </div>
                     </div>
                   </td>
-                  <td className="py-3"><Badge className={staffRoleTone(s.role)}>{s.role}</Badge></td>
+                  <td className="py-3"><StatusBadge tone={staffRoleBadgeTone(s.role)}>{s.role}</StatusBadge></td>
                   <td className="py-3">
                     {s.cohorts.length === 0 ? (
                       <span className="text-xs text-muted-foreground">—</span>
@@ -123,6 +161,19 @@ export default function StaffDirectory() {
                     )}
                   </td>
                   <td className="py-3"><StatusDot active={s.active} /></td>
+                  {canEdit && (
+                    <td className="py-3">
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={(e) => { e.stopPropagation(); toggleActive(s.id); }}
+                        className="h-8 w-8 p-0"
+                        title={s.active ? "Deactivate" : "Activate"}
+                      >
+                        <Power className="h-4 w-4" />
+                      </Button>
+                    </td>
+                  )}
                 </tr>
               ))}
             </tbody>
@@ -163,7 +214,7 @@ export default function StaffDirectory() {
                 </div>
               ) : (
                 <div className="mt-6 space-y-3">
-                  <ReadRow label="Role" value={<Badge className={staffRoleTone(selected.role)}>{selected.role}</Badge>} />
+                  <ReadRow label="Role" value={<StatusBadge tone={staffRoleBadgeTone(selected.role)}>{selected.role}</StatusBadge>} />
                   <ReadRow label="Status" value={<StatusDot active={selected.active} />} />
                   <div className="rounded-lg border border-border p-3">
                     <div className="text-xs text-muted-foreground mb-2">Assigned cohorts</div>

@@ -1,7 +1,7 @@
 import {
   Card, CardContent, CardHeader, CardTitle, CardDescription
 } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
+import { StatusBadge } from "@/components/ui/status-badge";
 import { GitBranch, ArrowLeftRight, Wallet, RotateCcw } from "lucide-react";
 
 const ROWS = [
@@ -13,12 +13,7 @@ const ROWS = [
   { name: "Sofia Marin", type: "Transfer", icon: ArrowLeftRight, date: "11 Aug 2026", status: "Pending", detail: "BEng → BEng (Hons) 4-yr" },
 ];
 
-const statusBadge = (s) =>
-  s === "Completed"
-    ? "bg-emerald-50 text-emerald-700 border-emerald-200 hover:bg-emerald-50"
-    : s === "In review"
-    ? "bg-sky-50 text-sky-700 border-sky-200 hover:bg-sky-50"
-    : "bg-amber-50 text-amber-700 border-amber-200 hover:bg-amber-50";
+const cocTone = (s) => (s === "Completed" ? "good" : s === "In review" ? "info" : "warning");
 
 function Field({ label, value, muted }) {
   return (
@@ -60,7 +55,7 @@ export default function ChangeOfCircumstance() {
                     </div>
                   </td>
                   <td className="py-3 px-2">{r.date}</td>
-                  <td className="py-3 px-2"><Badge className={statusBadge(r.status)}>{r.status}</Badge></td>
+                  <td className="py-3 px-2"><StatusBadge tone={cocTone(r.status)}>{r.status}</StatusBadge></td>
                   <td className="py-3 px-2 text-muted-foreground">{r.detail}</td>
                 </tr>
               ))}
@@ -79,7 +74,7 @@ export default function ChangeOfCircumstance() {
                   value={<span className="inline-flex items-center gap-2"><r.icon className="h-4 w-4 text-muted-foreground" />{r.type}</span>}
                 />
                 <Field label="Date" value={r.date} />
-                <Field label="Status" value={<Badge className={statusBadge(r.status)}>{r.status}</Badge>} />
+                <Field label="Status" value={<StatusBadge tone={cocTone(r.status)}>{r.status}</StatusBadge>} />
                 <Field label="Detail" value={r.detail} muted />
               </div>
             </div>

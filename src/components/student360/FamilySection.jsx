@@ -1,21 +1,29 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
-import { Users, Link2, Phone, Mail, Plus, ArrowRight } from "lucide-react";
+import { Users, Link2, Phone, Mail, Plus, ArrowRight, BadgeCheck } from "lucide-react";
 import { useRole } from "@/lib/RoleContext";
 import { canSeeFamily } from "@/lib/roles";
 import { guardiansForStudent, studentById, RELATIONSHIP_META } from "@/lib/records";
+import { StatusBadge } from "@/components/ui/status-badge";
+
+const RELATIONSHIP_TONE = {
+  parent: "info",
+  guardian: "violet",
+  sibling_contact: "warning",
+  other: "neutral",
+};
 
 export default function FamilySection({ studentId }) {
   const navigate = useNavigate();
   const { role } = useRole();
-  const canAdd = canSeeFamily(role) && (role === "admissions" || role === "registry_manager" || role === "admin" || role === "ceo" || role === "quality_manager");
+  const canAdd = canSeeFamily(role);
   const [guardians, setGuardians] = useState(guardiansForStudent(studentId));
+  const [verified, setVerified] = useState(() => new Set());
   const [adding, setAdding] = useState(false);
 
   const sibling = guardians
@@ -31,6 +39,14 @@ export default function FamilySection({ studentId }) {
     ]);
     setAdding(false);
   };
+
+  const toggleVerify = (key) =>
+    setVerified((prev) => {
+      const n = new Set(prev);
+      if (n.has(key)) n.delete(key);
+      else n.add(key);
+      return n;
+    });
 
   return (
     <Card>
@@ -64,11 +80,16 @@ export default function FamilySection({ studentId }) {
           )}
           {guardians.map((g, i) => {
             const meta = RELATIONSHIP_META[g.relationship] || RELATIONSHIP_META.other;
+            const key = `${g.name}-${i}`;
+            const isVerified = verified.has(key);
             return (
               <div key={i} className="rounded-xl border border-border p-4 space-y-3">
                 <div className="flex items-start justify-between gap-2">
                   <div className="text-sm font-semibold">{g.name}</div>
-                  <Badge className={meta.tone}>{meta.label}</Badge>
+                  <div className="flex items-center gap-1.5">
+                    {isVerified && <StatusBadge tone="good"><BadgeCheck className="h-3 w-3 mr-0.5" />Verified</StatusBadge>}
+                    <StatusBadge tone={RELATIONSHIP_TONE[g.relationship] || "neutral"}>{meta.label}</StatusBadge>
+                  </div>
                 </div>
                 <div className="space-y-1.5">
                   {g.contact_email && (
@@ -85,6 +106,16 @@ export default function FamilySection({ studentId }) {
                     <div className="text-xs text-muted-foreground">No contact details</div>
                   )}
                 </div>
+                {canAdd && (
+                  <Button
+                    size="sm"
+                    variant={isVerified ? "outline" : "default"}
+                    onClick={() => toggleVerify(key)}
+                    className="w-full"
+                  >
+                    {isVerified ? "Unverify" : "Mark verified"}
+                  </Button>
+                )}
               </div>
             );
           })}

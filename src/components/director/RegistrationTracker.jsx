@@ -1,7 +1,7 @@
 import {
   Card, CardContent, CardHeader, CardTitle, CardDescription
 } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
+import { StatusBadge } from "@/components/ui/status-badge";
 
 const ROWS = [
   { name: "Marcus Osei", prog: "MSc Data Science", regDate: "18 Aug 2026", status: "Confirmed", confDate: "20 Aug 2026" },
@@ -13,9 +13,9 @@ const ROWS = [
 
 function ConfBadge({ status }) {
   return status === "Confirmed" ? (
-    <Badge className="bg-emerald-50 text-emerald-700 border-emerald-200 hover:bg-emerald-50">Confirmed</Badge>
+    <StatusBadge tone="good">Confirmed</StatusBadge>
   ) : (
-    <Badge className="bg-amber-50 text-amber-700 border-amber-200 hover:bg-amber-50">Pending</Badge>
+    <StatusBadge tone="warning">Pending</StatusBadge>
   );
 }
 

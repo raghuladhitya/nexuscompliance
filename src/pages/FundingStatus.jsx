@@ -1,40 +1,83 @@
 import React, { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
-import { Search, AlertCircle, CheckCircle2, XCircle, Calendar, Filter } from "lucide-react";
+import { Search, Filter, Calendar, CheckCircle2, XCircle, Flag } from "lucide-react";
+import PageHeader from "@/components/shared/PageHeader";
+import AttentionList from "@/components/shared/AttentionList";
+import { StatusBadge } from "@/components/ui/status-badge";
+import { useRole } from "@/lib/RoleContext";
+import { canSeeNotApproved } from "@/lib/roles";
 import {
   FUNDING_STATUSES, STUDENTS, cohorts as allCohorts, notApprovedLearners,
   STP_STATUS_META, formatDateString
 } from "@/lib/records";
 
+const STP_TONE = { confirmed: "good", pending: "warning", rejected: "bad", "n/a": "neutral" };
+
 export default function FundingStatus() {
+  const { role } = useRole();
+  const canApprove = canSeeNotApproved(role);
   const [query, setQuery] = useState("");
   const [cohortFilter, setCohortFilter] = useState("all");
   const [notApprovedOnly, setNotApprovedOnly] = useState(true);
+  const [approved, setApproved] = useState(() => new Set());
+  const [flagged, setFlagged] = useState(() => new Set());
   const cohorts = allCohorts();
+
+  const baseUnapproved = notApprovedLearners().filter((l) => !approved.has(l.student_id));
+
+  const attentionItems = baseUnapproved.map((l) => {
+    const isFlagged = flagged.has(l.student_id);
+    const stp = STP_STATUS_META[l.stp_status] || STP_STATUS_META["n/a"];
+    const toggleFlag = () =>
+      setFlagged((prev) => {
+        const n = new Set(prev);
+        if (n.has(l.student_id)) n.delete(l.student_id);
+        else n.add(l.student_id);
+        return n;
+      });
+    return {
+      id: l.student_id,
+      label: l.name,
+      description: `${l.cohort || "—"} · ${stp.label}${isFlagged ? " · Flagged" : ""}`,
+      meta: isFlagged ? "Flagged" : stp.label,
+      tone: isFlagged ? "bad" : STP_TONE[l.stp_status] || "neutral",
+      actions: canApprove
+        ? [
+            { label: "Approve", variant: "default", onClick: () => setApproved((prev) => new Set(prev).add(l.student_id)) },
+            { label: isFlagged ? "Unflag" : "Flag", variant: "outline", onClick: toggleFlag },
+          ]
+        : [],
+    };
+  });
 
   const allRows = FUNDING_STATUSES
     .map((f) => ({ ...STUDENTS.find((s) => s.id === f.student_id), ...f }))
-    .filter((x) => x.id);
+    .filter((x) => x.id)
+    .map((r) => ({ ...r, learner_approved: approved.has(r.student_id) ? true : r.learner_approved }));
 
-  const base = notApprovedOnly ? notApprovedLearners() : allRows;
-
-  const rows = base
+  const rows = (notApprovedOnly ? allRows.filter((r) => !r.learner_approved) : allRows)
     .filter((r) => r.name.toLowerCase().includes(query.toLowerCase()))
     .filter((r) => cohortFilter === "all" || r.cohort === cohortFilter);
 
   return (
     <div className="space-y-6 animate-fade-in">
-      <div>
-        <h1 className="text-2xl font-semibold tracking-tight">Funding Status</h1>
-        <p className="text-sm text-muted-foreground mt-0.5">Funding source, STP status and learner approval across the institution.</p>
-      </div>
+      <PageHeader
+        title="Funding Status"
+        description="Funding source, STP status and learner approval across the institution."
+      />
+
+      <AttentionList
+        title="Unapproved learners — needs action"
+        items={attentionItems}
+        empty="All learners are approved."
+        icon={Flag}
+      />
 
       <Card>
         <CardHeader className="flex-row items-center justify-between flex-wrap gap-3">
           <div>
-            <CardTitle className="text-base flex items-center gap-2"><AlertCircle className="h-4 w-4 text-rose-500" /> Funding records</CardTitle>
+            <CardTitle className="text-base">Funding records</CardTitle>
             <CardDescription>Toggle the filter to focus on unapproved learners.</CardDescription>
           </div>
           <div className="flex flex-wrap items-center gap-2">
@@ -84,7 +127,7 @@ export default function FundingStatus() {
                       <div className="text-xs text-muted-foreground font-mono">{r.student_id}</div>
                     </td>
                     <td className="py-3 text-sm">{r.funding_source}</td>
-                    <td className="py-3"><Badge className={stp.tone}>{stp.label}</Badge></td>
+                    <td className="py-3"><StatusBadge tone={STP_TONE[r.stp_status] || "neutral"}>{stp.label}</StatusBadge></td>
                     <td className="py-3">
                       {r.learner_approved
                         ? <CheckCircle2 className="h-4 w-4 text-emerald-600" />
