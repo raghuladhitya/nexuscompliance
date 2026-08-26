@@ -58,7 +58,7 @@ export default function Attendance() {
       </div>
 
       {/* Cohort summary — big color-coded % + progress bar */}
-      <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid-auto-cards">
         {cohorts.map((c) => {
           const p = attendancePctForCohort(c);
           return (

@@ -21,7 +21,7 @@ export default function DirectorDashboard() {
 
       <ManagementKPIs />
 
-      <div className="grid lg:grid-cols-3 gap-6">
+      <div className="grid-auto-panels">
         <ComplianceSnapshot />
         <FinanceSnapshot />
         <RiskAlerts />
@@ -29,7 +29,7 @@ export default function DirectorDashboard() {
 
       <AttendanceWeekly />
 
-      <div className="grid lg:grid-cols-2 gap-6">
+      <div className="grid-auto-panels">
         <RegistrationTracker />
         <ChangeOfCircumstance />
       </div>

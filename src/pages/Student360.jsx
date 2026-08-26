@@ -189,7 +189,7 @@ export default function Student360() {
         </TabsContent>
 
         <TabsContent value="funding" className="mt-4">
-          <div className="grid lg:grid-cols-2 gap-6">
+          <div className="grid-auto-panels">
             {/* Category 1 — Student to pay */}
             <Card>
               <CardHeader>

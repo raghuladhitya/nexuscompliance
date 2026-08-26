@@ -22,7 +22,7 @@ export default function ManagementKPIs() {
   ];
 
   return (
-    <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+    <div className="grid-auto-cards">
       {items.map((k) => (
         <Link to={k.to} key={k.label}>
           <Card className="hover:shadow-md transition-shadow cursor-pointer h-full">
