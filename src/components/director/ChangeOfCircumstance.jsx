@@ -3,6 +3,8 @@ import {
 } from "@/components/ui/card";
 import { StatusBadge } from "@/components/ui/status-badge";
 import { GitBranch, ArrowLeftRight, Wallet, RotateCcw } from "lucide-react";
+import { useRole } from "@/lib/RoleContext";
+import { isAggregateOnlyRole } from "@/lib/roles";
 
 const ROWS = [
   { name: "James Whitfield", type: "Withdrawal", icon: GitBranch, date: "12 Mar 2026", status: "Completed", detail: "Voluntary — resumption possible" },
@@ -24,7 +26,59 @@ function Field({ label, value, muted }) {
   );
 }
 
+const TYPE_ICONS = { Withdrawal: GitBranch, Transfer: ArrowLeftRight, "Fee change": Wallet, Resumption: RotateCcw };
+
+function AggregateCOC() {
+  const byType = {};
+  ROWS.forEach((r) => { byType[r.type] = (byType[r.type] || 0) + 1; });
+  const byStatus = [
+    { label: "Completed", count: ROWS.filter((r) => r.status === "Completed").length, tone: "good" },
+    { label: "In review", count: ROWS.filter((r) => r.status === "In review").length, tone: "info" },
+    { label: "Pending", count: ROWS.filter((r) => r.status === "Pending").length, tone: "warning" },
+  ];
+
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle className="text-base">Change of circumstance</CardTitle>
+        <CardDescription>Aggregate COC activity across {ROWS.length} records.</CardDescription>
+      </CardHeader>
+      <CardContent className="space-y-5">
+        <div>
+          <div className="text-xs text-muted-foreground mb-2">By type</div>
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+            {Object.entries(byType).map(([type, count]) => {
+              const Icon = TYPE_ICONS[type] || GitBranch;
+              return (
+                <div key={type} className="rounded-lg border border-border p-4">
+                  <Icon className="h-4 w-4 text-muted-foreground" />
+                  <div className="text-2xl font-semibold mt-2">{count}</div>
+                  <div className="text-xs text-muted-foreground">{type}</div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+        <div>
+          <div className="text-xs text-muted-foreground mb-2">By status</div>
+          <div className="space-y-2">
+            {byStatus.map((s) => (
+              <div key={s.label} className="flex items-center justify-between rounded-lg border border-border p-3">
+                <span className="text-sm">{s.label}</span>
+                <StatusBadge tone={s.tone}>{s.count}</StatusBadge>
+              </div>
+            ))}
+          </div>
+        </div>
+      </CardContent>
+    </Card>
+  );
+}
+
 export default function ChangeOfCircumstance() {
+  const { role } = useRole();
+  if (isAggregateOnlyRole(role)) return <AggregateCOC />;
+
   return (
     <Card>
       <CardHeader>

@@ -2,6 +2,8 @@ import {
   Card, CardContent, CardHeader, CardTitle, CardDescription
 } from "@/components/ui/card";
 import { StatusBadge } from "@/components/ui/status-badge";
+import { useRole } from "@/lib/RoleContext";
+import { isAggregateOnlyRole } from "@/lib/roles";
 
 const ROWS = [
   { name: "Marcus Osei", prog: "MSc Data Science", regDate: "18 Aug 2026", status: "Confirmed", confDate: "20 Aug 2026" },
@@ -28,7 +30,53 @@ function Field({ label, value }) {
   );
 }
 
+function AggregateRegistration() {
+  const byStatus = [
+    { label: "Confirmed", count: ROWS.filter((r) => r.status === "Confirmed").length, tone: "good" },
+    { label: "Pending", count: ROWS.filter((r) => r.status === "Pending").length, tone: "warning" },
+  ];
+  const byProg = {};
+  ROWS.forEach((r) => { byProg[r.prog] = (byProg[r.prog] || 0) + 1; });
+
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle className="text-base">Registration tracking</CardTitle>
+        <CardDescription>Aggregate registration status across {ROWS.length} records.</CardDescription>
+      </CardHeader>
+      <CardContent className="space-y-5">
+        <div>
+          <div className="text-xs text-muted-foreground mb-2">By confirmation status</div>
+          <div className="grid grid-cols-2 gap-3">
+            {byStatus.map((s) => (
+              <div key={s.label} className="rounded-lg border border-border p-4">
+                <div className="text-sm text-muted-foreground">{s.label}</div>
+                <div className="text-2xl font-semibold mt-1">{s.count}</div>
+                <StatusBadge className="mt-2" tone={s.tone}>{s.label}</StatusBadge>
+              </div>
+            ))}
+          </div>
+        </div>
+        <div>
+          <div className="text-xs text-muted-foreground mb-2">By programme</div>
+          <div className="space-y-2">
+            {Object.entries(byProg).map(([prog, count]) => (
+              <div key={prog} className="flex items-center justify-between rounded-lg border border-border p-3">
+                <span className="text-sm">{prog}</span>
+                <span className="text-sm font-semibold">{count}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </CardContent>
+    </Card>
+  );
+}
+
 export default function RegistrationTracker() {
+  const { role } = useRole();
+  if (isAggregateOnlyRole(role)) return <AggregateRegistration />;
+
   return (
     <Card>
       <CardHeader>

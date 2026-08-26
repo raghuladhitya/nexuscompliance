@@ -62,3 +62,6 @@ export const canSeeFamily = (r) => ["admissions", "registry_manager", ...FULL_AC
 export const canSeeDrillDown = (r) => ["academic", ...FULL_ACCESS].includes(r);
 export const canSeeNotApproved = (r) => ["registry_manager", "management", "finance_manager", ...FULL_ACCESS].includes(r);
 export const canEditStaff = (r) => r === "admin";
+
+// Director-level oversight roles see aggregate counts only — never individual student names.
+export const isAggregateOnlyRole = (r) => ["ceo", "management", "quality_manager"].includes(r);

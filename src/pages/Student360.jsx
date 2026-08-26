@@ -15,6 +15,7 @@ import FundingSection from "@/components/student360/FundingSection";
 import TaughtByWidget from "@/components/staff/TaughtByWidget";
 import { useRole } from "@/lib/RoleContext";
 import { canSeeFamily, canSeeNotApproved } from "@/lib/roles";
+import AcademicStudentSearch from "@/components/academic/AcademicStudentSearch";
 
 const TIMELINE = [
   { date: "Sep 2021", label: "Enrolled", detail: "BSc Computer Science · Provider: Northbrook", tone: "sky" },
@@ -44,6 +45,8 @@ export default function Student360() {
   const [showMerge, setShowMerge] = useState(true);
   const { role } = useRole();
   const studentId = "STU-2021-4471";
+
+  if (role === "academic") return <AcademicStudentSearch />;
 
   return (
     <div className="space-y-6 animate-fade-in">

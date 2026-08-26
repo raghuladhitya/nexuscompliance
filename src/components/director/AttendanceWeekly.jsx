@@ -2,6 +2,8 @@ import {
   Card, CardContent, CardHeader, CardTitle, CardDescription
 } from "@/components/ui/card";
 import { StatusBadge } from "@/components/ui/status-badge";
+import { useRole } from "@/lib/RoleContext";
+import { isAggregateOnlyRole } from "@/lib/roles";
 
 const ROWS = [
   { name: "Aisha Khan", id: "STU-2022-3340", w: [95, 92, 90, 88], confirmed: "06 Aug 2026" },
@@ -25,7 +27,67 @@ function ConfirmedBadge({ value }) {
   );
 }
 
+function AggregateAttendance() {
+  const allAvg = Math.round(ROWS.reduce((s, r) => s + avg(r.w), 0) / ROWS.length);
+  const weeklyAvg = [0, 1, 2, 3].map((i) => {
+    const vals = ROWS.map((r) => r.w[i]).filter((v) => v > 0);
+    return vals.length ? Math.round(vals.reduce((a, b) => a + b, 0) / vals.length) : 0;
+  });
+  const bands = [
+    { label: "Good (≥85%)", count: ROWS.filter((r) => avg(r.w) >= 85).length, tone: "good" },
+    { label: "Watch (70–84%)", count: ROWS.filter((r) => avg(r.w) >= 70 && avg(r.w) < 85).length, tone: "warning" },
+    { label: "At risk (<70%)", count: ROWS.filter((r) => avg(r.w) < 70).length, tone: "bad" },
+  ];
+  const unconfirmed = ROWS.filter((r) => r.confirmed === "—").length;
+
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle className="text-base">Weekly attendance — August 2026</CardTitle>
+        <CardDescription>Aggregate attendance across {ROWS.length} tracked students.</CardDescription>
+      </CardHeader>
+      <CardContent className="space-y-5">
+        <div className="flex flex-wrap items-center gap-8">
+          <div>
+            <div className="text-sm text-muted-foreground">Overall average</div>
+            <div className="text-3xl font-semibold">{allAvg}%</div>
+          </div>
+          <div>
+            <div className="text-sm text-muted-foreground">Registers unconfirmed</div>
+            <div className="text-3xl font-semibold">{unconfirmed}</div>
+          </div>
+        </div>
+        <div>
+          <div className="text-xs text-muted-foreground mb-2">Weekly average</div>
+          <div className="grid grid-cols-4 gap-3">
+            {weeklyAvg.map((v, i) => (
+              <div key={i} className="rounded-lg border border-border p-3 text-center">
+                <div className="text-xs text-muted-foreground">W{i + 1}</div>
+                <div className={`text-lg font-semibold ${attClass(v)}`}>{v}%</div>
+              </div>
+            ))}
+          </div>
+        </div>
+        <div>
+          <div className="text-xs text-muted-foreground mb-2">Students by attendance band</div>
+          <div className="space-y-2">
+            {bands.map((b) => (
+              <div key={b.label} className="flex items-center justify-between rounded-lg border border-border p-3">
+                <span className="text-sm">{b.label}</span>
+                <StatusBadge tone={b.tone}>{b.count} students</StatusBadge>
+              </div>
+            ))}
+          </div>
+        </div>
+      </CardContent>
+    </Card>
+  );
+}
+
 export default function AttendanceWeekly() {
+  const { role } = useRole();
+  if (isAggregateOnlyRole(role)) return <AggregateAttendance />;
+
   return (
     <Card>
       <CardHeader>

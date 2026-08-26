@@ -1,14 +1,15 @@
 import {
   Card, CardContent, CardHeader, CardTitle, CardDescription
 } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { AlertTriangle, UserMinus, Clock, FileWarning } from "lucide-react";
+import { useRole } from "@/lib/RoleContext";
+import { isAggregateOnlyRole } from "@/lib/roles";
 
 const ALERTS = [
-  { icon: UserMinus, tone: "rose", title: "Withdrawal awaiting sign-off", sub: "Aisha Khan · 2 days in queue" },
-  { icon: AlertTriangle, tone: "amber", title: "Attendance below 60%", sub: "Tom Brennan · W3–W4 declining" },
-  { icon: FileWarning, tone: "rose", title: "HESA blocking error", sub: "4 records — must fix before submission" },
-  { icon: Clock, tone: "amber", title: "Registration pending", sub: "2 students unconfirmed for Term 1" },
+  { icon: UserMinus, tone: "rose", title: "Withdrawal awaiting sign-off", sub: "Aisha Khan · 2 days in queue", subAgg: "1 withdrawal · 2 days in queue" },
+  { icon: AlertTriangle, tone: "amber", title: "Attendance below 60%", sub: "Tom Brennan · W3–W4 declining", subAgg: "1 student · W3–W4 declining" },
+  { icon: FileWarning, tone: "rose", title: "HESA blocking error", sub: "4 records — must fix before submission", subAgg: "4 records — must fix before submission" },
+  { icon: Clock, tone: "amber", title: "Registration pending", sub: "2 students unconfirmed for Term 1", subAgg: "2 students unconfirmed for Term 1" },
 ];
 
 const TONES = {
@@ -17,6 +18,9 @@ const TONES = {
 };
 
 export default function RiskAlerts() {
+  const { role } = useRole();
+  const aggregate = isAggregateOnlyRole(role);
+
   return (
     <Card>
       <CardHeader>
@@ -31,7 +35,7 @@ export default function RiskAlerts() {
             </div>
             <div className="flex-1 min-w-0">
               <div className="text-sm font-medium truncate">{a.title}</div>
-              <div className="text-xs text-muted-foreground truncate">{a.sub}</div>
+              <div className="text-xs text-muted-foreground truncate">{aggregate ? a.subAgg : a.sub}</div>
             </div>
           </div>
         ))}
