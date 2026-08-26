@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 import FamilySection from "@/components/student360/FamilySection";
 import FundingSection from "@/components/student360/FundingSection";
+import TaughtByWidget from "@/components/staff/TaughtByWidget";
 import { useRole } from "@/lib/RoleContext";
 import { canSeeFamily, canSeeNotApproved } from "@/lib/roles";
 
@@ -64,6 +65,8 @@ export default function Student360() {
           <Button>View audit trail</Button>
         </div>
       </div>
+
+      <TaughtByWidget cohort="BSc Data Science" />
 
       {/* Duplicate merge prompt */}
       {showMerge && (
