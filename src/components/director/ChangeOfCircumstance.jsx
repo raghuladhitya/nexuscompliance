@@ -20,6 +20,15 @@ const statusBadge = (s) =>
     ? "bg-sky-50 text-sky-700 border-sky-200 hover:bg-sky-50"
     : "bg-amber-50 text-amber-700 border-amber-200 hover:bg-amber-50";
 
+function Field({ label, value, muted }) {
+  return (
+    <div className="flex justify-between gap-3">
+      <span className="text-xs text-muted-foreground shrink-0">{label}</span>
+      <span className={`text-right text-sm ${muted ? "text-muted-foreground font-normal" : "font-medium"}`}>{value}</span>
+    </div>
+  );
+}
+
 export default function ChangeOfCircumstance() {
   return (
     <Card>
@@ -27,34 +36,54 @@ export default function ChangeOfCircumstance() {
         <CardTitle className="text-base">Change of circumstance</CardTitle>
         <CardDescription>Withdrawals, transfers, fee changes and resumptions — with dates and status.</CardDescription>
       </CardHeader>
-      <CardContent className="overflow-x-auto">
-        <table className="w-full min-w-[520px] text-sm">
-          <thead>
-            <tr className="text-xs text-muted-foreground border-b border-border">
-              <th className="text-left font-medium py-2.5">Student</th>
-              <th className="text-left font-medium py-2.5">Type</th>
-              <th className="text-left font-medium py-2.5">Date</th>
-              <th className="text-left font-medium py-2.5">Status</th>
-              <th className="text-left font-medium py-2.5">Detail</th>
-            </tr>
-          </thead>
-          <tbody>
-            {ROWS.map((r, i) => (
-              <tr key={i} className="border-b border-border last:border-0">
-                <td className="py-3 font-medium">{r.name}</td>
-                <td className="py-3">
-                  <div className="flex items-center gap-2">
-                    <r.icon className="h-4 w-4 text-muted-foreground" />
-                    {r.type}
-                  </div>
-                </td>
-                <td className="py-3">{r.date}</td>
-                <td className="py-3"><Badge className={statusBadge(r.status)}>{r.status}</Badge></td>
-                <td className="py-3 text-muted-foreground">{r.detail}</td>
+      <CardContent>
+        {/* Table on wider screens */}
+        <div className="hidden md:block overflow-x-auto">
+          <table className="w-full min-w-[520px] text-sm">
+            <thead>
+              <tr className="text-xs text-muted-foreground border-b border-border">
+                <th className="text-left font-medium py-2.5">Student</th>
+                <th className="text-left font-medium py-2.5">Type</th>
+                <th className="text-left font-medium py-2.5">Date</th>
+                <th className="text-left font-medium py-2.5">Status</th>
+                <th className="text-left font-medium py-2.5">Detail</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {ROWS.map((r, i) => (
+                <tr key={i} className="border-b border-border last:border-0">
+                  <td className="py-3 font-medium">{r.name}</td>
+                  <td className="py-3">
+                    <div className="flex items-center gap-2">
+                      <r.icon className="h-4 w-4 text-muted-foreground" />
+                      {r.type}
+                    </div>
+                  </td>
+                  <td className="py-3">{r.date}</td>
+                  <td className="py-3"><Badge className={statusBadge(r.status)}>{r.status}</Badge></td>
+                  <td className="py-3 text-muted-foreground">{r.detail}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+
+        {/* Stacked, centered cards on narrow screens */}
+        <div className="md:hidden space-y-3">
+          {ROWS.map((r, i) => (
+            <div key={i} className="mx-auto max-w-md w-full rounded-lg border border-border p-4 space-y-2.5">
+              <div className="flex items-center justify-between gap-2">
+                <span className="text-sm font-medium">{r.name}</span>
+                <Badge className={statusBadge(r.status)}>{r.status}</Badge>
+              </div>
+              <div className="space-y-1.5">
+                <Field label="Type" value={<span className="inline-flex items-center gap-2"><r.icon className="h-4 w-4 text-muted-foreground" />{r.type}</span>} />
+                <Field label="Date" value={r.date} />
+                <Field label="Detail" value={r.detail} muted />
+              </div>
+            </div>
+          ))}
+        </div>
       </CardContent>
     </Card>
   );

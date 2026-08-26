@@ -88,7 +88,8 @@
   .grid-auto-cards {
     display: grid;
     gap: 1rem;
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr));
+    justify-content: center;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 320px));
   }
   .grid-auto-panels {
     display: grid;
