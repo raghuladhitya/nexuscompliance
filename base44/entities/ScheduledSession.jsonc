@@ -1,0 +1,42 @@
+{
+  "properties": {
+    "session_date": {
+      "format": "date",
+      "type": "string"
+    },
+    "session_status": {
+      "description": "Whether this scheduled session actually ran",
+      "enum": [
+        "scheduled",
+        "cancelled",
+        "rescheduled"
+      ],
+      "type": "string"
+    },
+    "staff_id": {
+      "description": "Reference to Staff.id - who was assigned to take this session",
+      "type": "string"
+    },
+    "term_id": {
+      "description": "Reference to Term.id",
+      "type": "string"
+    },
+    "unit_id": {
+      "description": "Reference to Unit.id",
+      "type": "string"
+    },
+    "week_number": {
+      "description": "Week number within the term",
+      "type": "integer"
+    }
+  },
+  "required": [
+    "unit_id",
+    "term_id",
+    "week_number",
+    "session_date",
+    "staff_id"
+  ],
+  "type": "object",
+  "name": "ScheduledSession"
+}

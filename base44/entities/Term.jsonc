@@ -1,0 +1,33 @@
+{
+  "properties": {
+    "academic_year": {
+      "description": "e.g. 2025/26",
+      "type": "string"
+    },
+    "end_date": {
+      "format": "date",
+      "type": "string"
+    },
+    "name": {
+      "description": "e.g. Term 1, Term 2, Term 3",
+      "type": "string"
+    },
+    "start_date": {
+      "format": "date",
+      "type": "string"
+    },
+    "week_count": {
+      "description": "Number of teaching weeks in this term - can vary per term",
+      "type": "integer"
+    }
+  },
+  "required": [
+    "name",
+    "academic_year",
+    "start_date",
+    "end_date",
+    "week_count"
+  ],
+  "type": "object",
+  "name": "Term"
+}

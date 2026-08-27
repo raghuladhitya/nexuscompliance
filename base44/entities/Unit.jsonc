@@ -1,0 +1,25 @@
+{
+  "properties": {
+    "course_id": {
+      "description": "Reference to Course.id",
+      "type": "string"
+    },
+    "name": {
+      "type": "string"
+    },
+    "sessions_per_week": {
+      "description": "How many timetabled sessions of this unit occur per week - needed since terms/units are not uniform",
+      "type": "integer"
+    },
+    "unit_code": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "name",
+    "unit_code",
+    "course_id"
+  ],
+  "type": "object",
+  "name": "Unit"
+}

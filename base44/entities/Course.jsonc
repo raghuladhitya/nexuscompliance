@@ -1,0 +1,24 @@
+{
+  "properties": {
+    "course_code": {
+      "type": "string"
+    },
+    "institution_id": {
+      "type": "string"
+    },
+    "level": {
+      "description": "e.g. undergraduate, postgraduate, foundation",
+      "type": "string"
+    },
+    "name": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "name",
+    "course_code",
+    "institution_id"
+  ],
+  "type": "object",
+  "name": "Course"
+}
