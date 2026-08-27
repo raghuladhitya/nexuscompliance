@@ -1,0 +1,39 @@
+{
+  "properties": {
+    "entity_name": {
+      "description": "Which entity this custom field applies to, e.g. Student, Staff, Enrolment",
+      "type": "string"
+    },
+    "field_label": {
+      "type": "string"
+    },
+    "field_type": {
+      "enum": [
+        "text",
+        "number",
+        "date",
+        "boolean",
+        "select"
+      ],
+      "type": "string"
+    },
+    "institution_id": {
+      "type": "string"
+    },
+    "select_options": {
+      "description": "Used only when field_type is select",
+      "items": {
+        "type": "string"
+      },
+      "type": "array"
+    }
+  },
+  "required": [
+    "institution_id",
+    "entity_name",
+    "field_label",
+    "field_type"
+  ],
+  "type": "object",
+  "name": "CustomFieldDefinition"
+}

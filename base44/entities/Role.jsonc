@@ -1,0 +1,17 @@
+{
+  "properties": {
+    "institution_id": {
+      "type": "string"
+    },
+    "name": {
+      "description": "e.g. Admissions Manager, Registry Officer - institution-defined, not a fixed code list",
+      "type": "string"
+    }
+  },
+  "required": [
+    "name",
+    "institution_id"
+  ],
+  "type": "object",
+  "name": "Role"
+}

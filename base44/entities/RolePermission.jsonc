@@ -1,0 +1,18 @@
+{
+  "properties": {
+    "permission_id": {
+      "description": "Reference to Permission.id",
+      "type": "string"
+    },
+    "role_id": {
+      "description": "Reference to Role.id",
+      "type": "string"
+    }
+  },
+  "required": [
+    "role_id",
+    "permission_id"
+  ],
+  "type": "object",
+  "name": "RolePermission"
+}

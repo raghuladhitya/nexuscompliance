@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import PageHeader from "@/components/shared/PageHeader";
 import CohortSummary from "@/components/attendance/CohortSummary";
-import StudentLookup from "@/components/attendance/StudentLookup";
+import StudentDetail from "@/components/attendance/StudentDetail";
 import { useRole } from "@/lib/RoleContext";
 import { isAggregateOnlyRole } from "@/lib/roles";
 
@@ -36,12 +36,12 @@ export default function Attendance() {
               activeView === "student" ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground"
             }`}
           >
-            Student Lookup
+            Student Detail
           </button>
         </div>
       )}
 
-      {activeView === "cohort" ? <CohortSummary /> : <StudentLookup />}
+      {activeView === "cohort" ? <CohortSummary /> : <StudentDetail />}
     </div>
   );
 }

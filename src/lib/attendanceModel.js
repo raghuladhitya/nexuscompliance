@@ -215,3 +215,21 @@ export function cohortStats(cohortName, termId) {
 export function cohortStatsByTerm(cohortName) {
   return TERMS.map((t) => ({ term: t, ...cohortStats(cohortName, t.id) }));
 }
+
+// Weekly aggregation within a term: attended / scheduled per week_number.
+export function studentStatsByWeek(studentId, termId) {
+  const sessions = expectedSessions(studentId, termId);
+  const byWeek = {};
+  sessions.forEach((ss) => {
+    const w = (byWeek[ss.week_number] ||= { week: ss.week_number, scheduled: 0, attended: 0, authorized: 0, absent: 0 });
+    w.scheduled += 1;
+    const rec = attendanceForSession(studentId, ss.id);
+    if (!rec) return;
+    if (rec.status === "present" || rec.status === "late") w.attended += 1;
+    else if (rec.status === "authorized_absence") w.authorized += 1;
+    else if (rec.status === "absent") w.absent += 1;
+  });
+  return Object.values(byWeek)
+    .map((w) => ({ ...w, raw: w.scheduled ? Math.round((w.attended / w.scheduled) * 100) : 0 }))
+    .sort((a, b) => a.week - b.week);
+}

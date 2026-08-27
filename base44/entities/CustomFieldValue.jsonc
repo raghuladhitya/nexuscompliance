@@ -1,0 +1,23 @@
+{
+  "properties": {
+    "entity_id": {
+      "description": "Polymorphic reference - the id of the actual record (Student, Staff, etc.) this value belongs to",
+      "type": "string"
+    },
+    "field_definition_id": {
+      "description": "Reference to CustomFieldDefinition.id",
+      "type": "string"
+    },
+    "value": {
+      "description": "Stored as text regardless of field_type; interpreted per the definition's field_type",
+      "type": "string"
+    }
+  },
+  "required": [
+    "field_definition_id",
+    "entity_id",
+    "value"
+  ],
+  "type": "object",
+  "name": "CustomFieldValue"
+}

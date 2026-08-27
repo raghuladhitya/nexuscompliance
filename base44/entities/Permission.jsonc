@@ -1,0 +1,16 @@
+{
+  "properties": {
+    "description": {
+      "type": "string"
+    },
+    "name": {
+      "description": "e.g. view_funding_status, edit_staff, approve_learner",
+      "type": "string"
+    }
+  },
+  "required": [
+    "name"
+  ],
+  "type": "object",
+  "name": "Permission"
+}
