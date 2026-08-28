@@ -1,0 +1,32 @@
+{
+  "properties": {
+    "end_date": {
+      "description": "Null if this is the current/ongoing assignment",
+      "format": "date",
+      "type": "string"
+    },
+    "institution_id": {
+      "type": "string"
+    },
+    "staff_id": {
+      "description": "Reference to Staff.id - the personal tutor/academic advisor",
+      "type": "string"
+    },
+    "start_date": {
+      "format": "date",
+      "type": "string"
+    },
+    "student_id": {
+      "description": "Reference to Student.id",
+      "type": "string"
+    }
+  },
+  "required": [
+    "student_id",
+    "staff_id",
+    "start_date",
+    "institution_id"
+  ],
+  "type": "object",
+  "name": "TutorAssignment"
+}

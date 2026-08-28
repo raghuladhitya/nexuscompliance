@@ -27,6 +27,8 @@ import AdminSettings from '@/pages/AdminSettings';
 import AuditLog from '@/pages/AuditLog';
 import StaffDirectory from '@/pages/StaffDirectory';
 import FundingStatus from '@/pages/FundingStatus';
+import RolesPermissions from '@/pages/RolesPermissions';
+import CustomFields from '@/pages/CustomFields';
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
@@ -71,6 +73,8 @@ const AuthenticatedApp = () => {
           <Route path="/communications" element={<Communications />} />
           <Route path="/staff" element={<StaffDirectory />} />
           <Route path="/funding-status" element={<FundingStatus />} />
+          <Route path="/roles" element={<RolesPermissions />} />
+          <Route path="/custom-fields" element={<CustomFields />} />
           <Route path="/settings" element={<AdminSettings />} />
           <Route path="/audit" element={<AuditLog />} />
         </Route>

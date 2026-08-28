@@ -1,0 +1,45 @@
+{
+  "properties": {
+    "institution_id": {
+      "type": "string"
+    },
+    "notes": {
+      "type": "string"
+    },
+    "student_id": {
+      "description": "Reference to Student.id",
+      "type": "string"
+    },
+    "verification_status": {
+      "enum": [
+        "verified_clear",
+        "pending",
+        "not_provided",
+        "rejected"
+      ],
+      "type": "string"
+    },
+    "verification_type": {
+      "description": "What this verification covers, e.g. identity_document, visa, qualification_evidence, attendance_authorization",
+      "type": "string"
+    },
+    "verified_by": {
+      "description": "Reference to Staff.id or User.id who confirmed this - no underlying file is stored, this is an attestation that verification happened outside the tool",
+      "type": "string"
+    },
+    "verified_date": {
+      "format": "date",
+      "type": "string"
+    }
+  },
+  "required": [
+    "student_id",
+    "verification_type",
+    "verification_status",
+    "verified_by",
+    "verified_date",
+    "institution_id"
+  ],
+  "type": "object",
+  "name": "DocumentVerification"
+}

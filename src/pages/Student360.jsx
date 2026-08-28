@@ -13,6 +13,10 @@ import {
 import FamilySection from "@/components/student360/FamilySection";
 import FundingSection from "@/components/student360/FundingSection";
 import TaughtByWidget from "@/components/staff/TaughtByWidget";
+import PersonalTutorCard from "@/components/student360/PersonalTutorCard";
+import VerificationSection from "@/components/student360/VerificationSection";
+import StatusHistoryList from "@/components/student360/StatusHistoryList";
+import CustomFieldsSection from "@/components/shared/CustomFieldsSection";
 import { useRole } from "@/lib/RoleContext";
 import { canSeeFamily, canSeeNotApproved } from "@/lib/roles";
 import AcademicStudentSearch from "@/components/academic/AcademicStudentSearch";
@@ -70,6 +74,8 @@ export default function Student360() {
       </div>
 
       <TaughtByWidget cohort="BSc Data Science" />
+
+      <PersonalTutorCard studentId={studentId} />
 
       {/* Duplicate merge prompt */}
       {showMerge && (
@@ -141,6 +147,9 @@ export default function Student360() {
           {canSeeNotApproved(role) && <TabsTrigger value="funding-status">Funding Status</TabsTrigger>}
           <TabsTrigger value="communications">Communications</TabsTrigger>
           <TabsTrigger value="hesa">HESA Fields</TabsTrigger>
+          <TabsTrigger value="verification">Verification</TabsTrigger>
+          <TabsTrigger value="status-history">Status History</TabsTrigger>
+          <TabsTrigger value="custom-fields">Custom Fields</TabsTrigger>
         </TabsList>
 
         <TabsContent value="attendance" className="mt-4">
@@ -306,6 +315,18 @@ export default function Student360() {
             <FundingSection studentId={studentId} />
           </TabsContent>
         )}
+
+        <TabsContent value="verification" className="mt-4">
+          <VerificationSection studentId={studentId} />
+        </TabsContent>
+
+        <TabsContent value="status-history" className="mt-4">
+          <StatusHistoryList studentId={studentId} />
+        </TabsContent>
+
+        <TabsContent value="custom-fields" className="mt-4">
+          <CustomFieldsSection entityName="Student" entityId={studentId} />
+        </TabsContent>
       </Tabs>
     </div>
   );

@@ -13,6 +13,8 @@ import AttentionList from "@/components/shared/AttentionList";
 import { useRole } from "@/lib/RoleContext";
 import { canEditStaff } from "@/lib/roles";
 import { STAFF, cohorts as allCohorts } from "@/lib/records";
+import { roleNames } from "@/lib/rbacModel";
+import CustomFieldsSection from "@/components/shared/CustomFieldsSection";
 
 function initials(name) {
   return name.replace(/^(Dr\.|Prof\.|Mr\.|Mrs\.|Ms\.)\s*/i, "").split(" ").map((p) => p[0]).join("").slice(0, 2).toUpperCase();
@@ -201,7 +203,9 @@ export default function StaffDirectory() {
                   </div>
                   <div className="space-y-1.5">
                     <Label htmlFor="d-role">Role</Label>
-                    <Input id="d-role" value={draft.role} onChange={(e) => setDraft({ ...draft, role: e.target.value })} />
+                    <select id="d-role" value={draft.role} onChange={(e) => setDraft({ ...draft, role: e.target.value })} className="h-9 w-full rounded-md border border-input bg-transparent px-2 text-sm">
+                      {roleNames().map((r) => <option key={r} value={r}>{r}</option>)}
+                    </select>
                   </div>
                   <div className="space-y-1.5">
                     <Label htmlFor="d-cohorts">Assigned cohorts (comma-separated)</Label>
@@ -237,6 +241,10 @@ export default function StaffDirectory() {
                   </div>
                 </div>
               )}
+
+              <div className="mt-6">
+                <CustomFieldsSection entityName="Staff" entityId={selected.id} />
+              </div>
 
               {canEdit && draft && (
                 <SheetFooter className="mt-6">

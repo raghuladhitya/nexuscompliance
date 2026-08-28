@@ -4,7 +4,7 @@ import {
   LayoutDashboard, Users, CalendarCheck, FileCheck2, BarChart3,
   GitBranch, Wallet, MessageSquare, Settings, ScrollText,
   Building2, ChevronDown, LogOut, GraduationCap, Menu, X, ShieldCheck,
-  UserCog, Landmark
+  UserCog, Landmark, ListPlus
 } from "lucide-react";
 import { base44 } from "@/api/base44Client";
 import { useRole } from "@/lib/RoleContext";
@@ -21,6 +21,8 @@ const NAV = [
   { to: "/communications", label: "Communications", icon: MessageSquare },
   { to: "/staff", label: "Staff Directory", icon: UserCog },
   { to: "/funding-status", label: "Funding Status", icon: Landmark },
+  { to: "/roles", label: "Roles & Permissions", icon: ShieldCheck },
+  { to: "/custom-fields", label: "Custom Fields", icon: ListPlus },
   { to: "/settings", label: "Admin & Settings", icon: Settings },
   { to: "/audit", label: "Audit Log", icon: ScrollText },
 ];

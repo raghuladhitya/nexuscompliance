@@ -1,6 +1,7 @@
 export const ALL_PAGES = [
   "/", "/students", "/attendance", "/hesa", "/reports", "/withdrawals",
   "/finance", "/communications", "/settings", "/audit", "/staff", "/funding-status",
+  "/roles", "/custom-fields",
 ];
 
 const FULL = ALL_PAGES;

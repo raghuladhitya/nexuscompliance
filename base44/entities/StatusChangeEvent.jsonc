@@ -1,0 +1,47 @@
+{
+  "properties": {
+    "changed_by": {
+      "description": "Reference to Staff.id or User.id - who recorded this change",
+      "type": "string"
+    },
+    "effective_date": {
+      "format": "date",
+      "type": "string"
+    },
+    "event_type": {
+      "description": "e.g. intermission, course_transfer, withdrawal, reinstatement",
+      "type": "string"
+    },
+    "external_tracking_ref": {
+      "description": "Reference/ticket number from the external COC tracking process this event corresponds to - the actual COC workflow is handled manually outside the tool, this field just links the two",
+      "type": "string"
+    },
+    "institution_id": {
+      "type": "string"
+    },
+    "new_status": {
+      "type": "string"
+    },
+    "previous_status": {
+      "type": "string"
+    },
+    "reason": {
+      "type": "string"
+    },
+    "student_id": {
+      "description": "Reference to Student.id",
+      "type": "string"
+    }
+  },
+  "required": [
+    "student_id",
+    "event_type",
+    "previous_status",
+    "new_status",
+    "effective_date",
+    "changed_by",
+    "institution_id"
+  ],
+  "type": "object",
+  "name": "StatusChangeEvent"
+}
